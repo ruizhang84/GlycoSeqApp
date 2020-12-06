@@ -13,9 +13,10 @@ namespace GlycoSeqClassLibrary.engine.search
     {
         ISearch<int> searcher_;
         Dictionary<string, IGlycan> glycans_map_;
-        readonly string kY1 = "1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ";
+        readonly string kY1 = "1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
         const int kMissing = 5;
-        Dictionary<string, double> peptide_mass_;
+        Dictionary<string, double> peptide_mass_ 
+            = new Dictionary<string, double>();
 
         public GlycanSearch(ISearch<int> searcher,
             Dictionary<string, IGlycan> glycans_map)

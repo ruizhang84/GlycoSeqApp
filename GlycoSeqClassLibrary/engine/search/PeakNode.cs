@@ -1,5 +1,4 @@
-﻿using Priority_Queue;
-using SpectrumData;
+﻿using SpectrumData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ namespace GlycoSeqClassLibrary.engine.search
     {
         int miss_ = 1;
         double mass_ = 0;
-        PeakMatch matches_;
+        PeakMatch matches_ = new PeakMatch();
 
         public int Missing() { return miss_; }
         public void set_miss(int miss) { miss_ = miss; }

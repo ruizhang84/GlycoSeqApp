@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MultiGlycanClassLibrary.model.protein;
+using GlycoSeqClassLibrary.model.protein;
 
 namespace GlycoSeqClassLibrary.util.io
 {

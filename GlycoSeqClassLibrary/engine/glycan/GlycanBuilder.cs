@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GlycoSeqClassLibrary.engine.glycan
 {
-    class GlycanBuilder
+    public class GlycanBuilder
     {
         protected int hexNAc_;
         protected int hex_;
@@ -18,7 +18,7 @@ namespace GlycoSeqClassLibrary.engine.glycan
         protected Dictionary<string, IGlycan> glycans_map_; // glycan id -> glycan
         protected List<Monosaccharide> candidates_;
 
-        public GlycanBuilder(int hexNAc, int hex, int fuc, int neuAc, int neuGc)
+        public GlycanBuilder(int hexNAc=12, int hex=12, int fuc=5, int neuAc=4, int neuGc=0)
         {
             hexNAc_ = hexNAc;
             hex_ = hex;

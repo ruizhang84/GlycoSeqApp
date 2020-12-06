@@ -8,8 +8,9 @@ namespace GlycoSeqClassLibrary.model.glycan
 {
     public abstract class BaseNGlycan : IGlycan
     {
-        protected List<IGlycan> glycans;
-        protected SortedDictionary<Monosaccharide, int> composite;
+        protected List<IGlycan> glycans = new List<IGlycan>();
+        protected SortedDictionary<Monosaccharide, int> composite 
+            = new SortedDictionary<Monosaccharide, int>();
         protected string id;
         protected double mass;
 
@@ -34,7 +35,7 @@ namespace GlycoSeqClassLibrary.model.glycan
 
         public string ID()
         {
-            return id;
+            return string.Join(" ", Table()); ;
         }
 
         public double Mass()

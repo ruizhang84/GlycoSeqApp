@@ -11,8 +11,10 @@ namespace GlycoSeqClassLibrary.engine.search
     {
         algorithm.ISearch<string> searcher_;
         // mass table to store the computed ptm / non-ptm results
-        Dictionary<string, List<double>> ptm_mass_table_;
-        Dictionary<string, List<double>> mass_table_;
+        Dictionary<string, List<double>> ptm_mass_table_
+            = new Dictionary<string, List<double>>();
+        Dictionary<string, List<double>> mass_table_ 
+            = new Dictionary<string, List<double>>();
 
         public SequenceSearch(algorithm.ISearch<string> searcher)
         {
@@ -20,7 +22,7 @@ namespace GlycoSeqClassLibrary.engine.search
         }
 
         // peptide seq, glycan*
-        Dictionary<string, HashSet<int>> Search(List<IPeak> peaks, int max_charge,
+        public Dictionary<string, HashSet<int>> Search(List<IPeak> peaks, int max_charge,
             Dictionary<string, List<model.glycan.IGlycan>> candidate)
         {
             InitSearch(candidate);

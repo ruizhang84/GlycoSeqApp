@@ -14,6 +14,12 @@ namespace GlycoSeqClassLibrary.algorithm
         protected ToleranceBy type_;
         protected List<List<Point<T>>> data_ = new List<List<Point<T>>>();
 
+        public BucketSearch(ToleranceBy by, double tol)
+        {
+            tolerance_ = tol;
+            type_ = by;
+        }
+
         public void Init(List<Point<T>> inputs)
         {
             lower_ = long.MaxValue;
@@ -170,7 +176,7 @@ namespace GlycoSeqClassLibrary.algorithm
             data_ = new List<List<Point<T>>>(size);
             for(int i = 0; i < size; i++)
             {
-                data_[i] = new List<Point<T>>();
+                data_.Add(new List<Point<T>>());
             }
 
             // assign the value
@@ -192,7 +198,7 @@ namespace GlycoSeqClassLibrary.algorithm
             size = Math.Max(size, 0);
             data_ = new List<List<Point<T>>>(size);
             for (int i = 0; i < size; i++)
-                data_[i] = new List<Point<T>>();
+                data_.Add(new List<Point<T>>());
 
             // assign the value
             foreach (Point<T> point in inputs)

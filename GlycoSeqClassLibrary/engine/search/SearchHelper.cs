@@ -53,7 +53,7 @@ namespace GlycoSeqClassLibrary.engine.search
                 mass_list.Add(util.mass.Ion.To.Compute(mass, util.mass.IonType.b));
                 mass_list.Add(util.mass.Ion.To.Compute(mass, util.mass.IonType.c));
             }
-            mass = util.mass.Peptide.To.Compute(seq.Substring(pos + 1, seq.Length - pos));
+            mass = util.mass.Peptide.To.Compute(seq.Substring(pos + 1, seq.Length - pos - 1));
             for (int i = pos; i >= 1; i--)
             {
                 char amino = seq[i];

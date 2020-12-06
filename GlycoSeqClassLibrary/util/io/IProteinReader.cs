@@ -1,4 +1,4 @@
-﻿using MultiGlycanClassLibrary.model.protein;
+﻿using GlycoSeqClassLibrary.model.protein;
 using System;
 using System.Collections.Generic;
 using System.Linq;

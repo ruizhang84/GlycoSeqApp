@@ -9,15 +9,17 @@ namespace GlycoSeqClassLibrary.engine.search
     public class PrecursorMatch
     {
         algorithm.ISearch<string> searcher_;
-        List<algorithm.Point<string>> peptides_;
-        List<model.glycan.IGlycan> glycans_;
+        List<algorithm.Point<string>> peptides_ 
+            = new List<algorithm.Point<string>>();
+        List<model.glycan.IGlycan> glycans_ 
+            = new List<model.glycan.IGlycan>();
 
         public PrecursorMatch(algorithm.ISearch<string> searcher)
         {
             searcher_ = searcher;
         }
 
-        void Init(List<string> peptides, Dictionary<string, model.glycan.IGlycan> glycans)
+        public void Init(List<string> peptides, Dictionary<string, model.glycan.IGlycan> glycans)
         {
             foreach(var it in peptides)
             {
@@ -32,7 +34,7 @@ namespace GlycoSeqClassLibrary.engine.search
             searcher_.Init(peptides_);
         }
 
-        Dictionary<string, List<model.glycan.IGlycan>> Match(double precursor, int charge)
+        public Dictionary<string, List<model.glycan.IGlycan>> Match(double precursor, int charge)
         {
             Dictionary<string, List<model.glycan.IGlycan>> results = 
                 new Dictionary<string, List<model.glycan.IGlycan>>();

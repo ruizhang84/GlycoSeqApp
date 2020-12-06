@@ -22,6 +22,7 @@ namespace GlycoSeqApp
         public ConfigureWindow()
         {
             InitializeComponent();
+            InitWindow();
         }
 
         public void InitWindow()
@@ -107,7 +108,7 @@ namespace GlycoSeqApp
             }
             else
             {
-                MessageBox.Show("Alpha value is invalid!");
+                MessageBox.Show("Thread value is invalid!");
                 return false;
             }
 

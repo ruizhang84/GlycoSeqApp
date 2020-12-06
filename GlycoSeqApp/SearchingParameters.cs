@@ -16,7 +16,7 @@ namespace GlycoSeqApp
         public ToleranceBy MS2ToleranceBy { get; set; } = ToleranceBy.Dalton;
 
         //peptides
-        public List<string> DigestionEnzyme { get; set; } = new List<string> { "Trypsin", "Gluc" };
+        public List<string> DigestionEnzyme { get; set; } = new List<string> { "Trypsin", "GluC" };
         public int MissCleavage { get; set; } = 2;
         public int MiniPeptideLength { get; set; } = 5;
 
@@ -77,7 +77,7 @@ namespace GlycoSeqApp
         public ToleranceBy MS1ToleranceBy { get; set; } = ToleranceBy.PPM;
         public ToleranceBy MS2ToleranceBy { get; set; } = ToleranceBy.Dalton;
         //peptides
-        public List<string> DigestionEnzyme { get; set; } = new List<string> { "Trypsin", "Gluc" };
+        public List<string> DigestionEnzyme { get; set; } = new List<string> { "Trypsin", "GluC" };
         public int MissCleavage { get; set; } = 2;
         public int MiniPeptideLength { get; set; } = 5;
 

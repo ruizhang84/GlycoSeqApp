@@ -5,8 +5,42 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GlycoSeqApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="GlycoSeq" Height="150" Width="750">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <!-- read File Name of MSMS data-->
+        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="MS/MS File" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="76"/>
+                <TextBox x:Name="displayFileName" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="600"/>
+                <Button x:Name="MSMSFileName" Content="..." HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Click="MSMSFileName_Click" RenderTransformOrigin="5.243,2.41"/>
+            </StackPanel>
+        </Border>
+        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="Black" Grid.Row="1">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Fasta File" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76"/>
+                <TextBox x:Name="displayFasta" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="600"/>
+                <Button x:Name="FastaFileName" Content="..." HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Click="FastaFileName_Click" Grid.RowSpan="2"/>
+            </StackPanel>
+        </Border>
+        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="Black" Grid.Row="2">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Output" HorizontalAlignment="Left" VerticalAlignment="Top" Width="76"/>
+                <TextBox x:Name="displayOutput" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="600"/>
+                <Button x:Name="outputFileName" Content="..." HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Click="OutputFileName_Click" Grid.RowSpan="2"/>
+            </StackPanel>
+        </Border>
+        <Border HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="3">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="Search"  Content="Search" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="75" Click="Search_Click" Margin="10"/>
+                <Button x:Name="Configure"  Content="Configure" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75" Click="Configure_Click" Margin="10"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

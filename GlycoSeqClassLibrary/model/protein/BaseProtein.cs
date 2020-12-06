@@ -10,6 +10,7 @@ namespace GlycoSeqClassLibrary.model.protein
     {
         protected string id;
         protected string sequence;
+
         public string ID()
         {
             return id;

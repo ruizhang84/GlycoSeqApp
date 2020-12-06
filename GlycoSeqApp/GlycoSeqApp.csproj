@@ -55,6 +55,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ConfigureWindow.xaml.cs">
+      <DependentUpon>ConfigureWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MultiThreadingSearch.cs" />
+    <Compile Include="SearchingParameters.cs" />
+    <Compile Include="SearchWindow.xaml.cs">
+      <DependentUpon>SearchWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="ConfigureWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -67,6 +79,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SearchWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -93,6 +109,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GlycoSeqClassLibrary\GlycoSeqClassLibrary.csproj">
+      <Project>{fe822078-34af-4f07-b0a5-89f6e078e13c}</Project>
+      <Name>GlycoSeqClassLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PrecursorIonClassLibrary\PrecursorIonClassLibrary.csproj">
+      <Project>{371bfab2-d026-4cd7-9122-e1303f057c9b}</Project>
+      <Name>PrecursorIonClassLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ThermoRawReader\SpectrumDataReader.csproj">
+      <Project>{db0bf4e4-76d6-403c-9d37-bd230961ea43}</Project>
+      <Name>SpectrumDataReader</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

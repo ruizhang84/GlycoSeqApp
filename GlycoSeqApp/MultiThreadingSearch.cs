@@ -37,92 +37,36 @@ namespace GlycoSeqApp
 
     public class MultiThreadingSearch
     {
-        Counter counter;
-        Queue<SearchTask> tasks;
-        List<SearchResult> targets;
-        List<SearchResult> decoys;
+        Counter readingCounter;
+        Counter searchCounter;
         List<string> peptides;
         List<string> decoyPeptides;
+        GlycanBuilder glycanBuilder;
+
+        Queue<SearchTask> tasks;
+        string msPath;
+        List<SearchResult> targets = new List<SearchResult>();
+        List<SearchResult> decoys = new List<SearchResult>();
         private readonly object queueLock = new object();
         private readonly object resultLock = new object();
         private readonly double searchRange = 2;
-        GlycanBuilder glycanBuilder = new GlycanBuilder();
+        int taskSize = 0;
+        
 
-
-        static string Reverse(string stringToReverse)
+        public MultiThreadingSearch(string msPath, Counter readingCounter, Counter searchCounter,
+            List<string> peptides, List<string> decoyPeptides, GlycanBuilder glycanBuilder)
         {
-            char[] stringArray = stringToReverse.ToCharArray();
-            string reverse = string.Empty;
-            for (int i = stringArray.Length - 1; i >= 0; i--)
-            {
-                reverse += stringArray[i];
-            }
-
-            return reverse;
-        }
-
-        public MultiThreadingSearch(Counter counter)
-        {
-            this.counter = counter;
-
+            this.msPath = msPath;
+            this.readingCounter = readingCounter;
+            this.searchCounter = searchCounter;
+            this.peptides = peptides;
+            this.decoyPeptides = decoyPeptides;
+            this.glycanBuilder = glycanBuilder;
+            
             // read spectrum
             tasks = new Queue<SearchTask>();
             GenerateTasks();
-
-            // build pepeptides
-            IProteinReader proteinReader = new FastaReader();
-            List<IProtein> proteins = proteinReader.Read(SearchingParameters.Access.FastaFile);
-            List<IProtein> decoyProteins = new List<IProtein>();
-            foreach (IProtein protein in proteins)
-            {
-                IProtein p = new BaseProtein();
-                p.SetSequence(Reverse(protein.Sequence()));
-                decoyProteins.Add(p);
-            }
-            peptides = GeneratePeptides(proteins);
-            decoyPeptides = GeneratePeptides(decoyProteins);
-
-            // build glycans
-            glycanBuilder.Build();
-            
-        }
-
-        List<string> GeneratePeptides(List<IProtein> proteins)
-        {
-            // peptides
-            List<Proteases> proteases = new List<Proteases>();
-            foreach(string enzyme in SearchingParameters.Access.DigestionEnzyme)
-            {
-                switch(enzyme)
-                {
-                    case "Chymotrypsin":
-                        proteases.Add(Proteases.Chymotrypsin);
-                        break;
-                    case "GluC":
-                        proteases.Add(Proteases.GluC);
-                        break;
-                    case "Pepsin":
-                        proteases.Add(Proteases.Pepsin);
-                        break;
-                    case "":
-                        proteases.Add(Proteases.Trypsin);
-                        break;
-                }
-            }
-
-            HashSet<string> peptides = new HashSet<string>();
-            foreach (Proteases enzyme in proteases)
-            {
-                ProteinDigest proteinDigest = new ProteinDigest(
-                    SearchingParameters.Access.MissCleavage, 
-                    SearchingParameters.Access.MiniPeptideLength, enzyme);
-                foreach (IProtein protein in proteins)
-                {
-                    peptides.UnionWith(proteinDigest.Sequences(protein.Sequence(),
-                        ProteinPTM.ContainsNGlycanSite));
-                }
-            }
-            return peptides.ToList();
+            taskSize = tasks.Count;
         }
 
         public List<SearchResult> Target()
@@ -166,12 +110,14 @@ namespace GlycoSeqApp
             ISpectrumReader reader = new ThermoRawSpectrumReader();
             LocalMaximaPicking picking = new LocalMaximaPicking();
             IProcess process = new LocalNeighborPicking();
-            reader.Init(SearchingParameters.Access.MSMSFile);
+            reader.Init(msPath);
             
             ISpectrum ms1 = null;
             List<IPeak> majorPeaks = new List<IPeak>();
+            int start = reader.GetFirstScan();
+            int end = reader.GetLastScan();
 
-            for (int i = reader.GetFirstScan(); i < reader.GetLastScan(); i++)
+            for (int i = start; i < end; i++)
             {
                 if (reader.GetMSnOrder(i) < 2)
                 {
@@ -207,10 +153,9 @@ namespace GlycoSeqApp
                     ms2 = process.Process(ms2);
 
                     SearchTask searchTask = new SearchTask(i, ms2.GetPeaks(), precursorMZ, charge);
-                    tasks.Enqueue(searchTask);
-
-                    
+                    tasks.Enqueue(searchTask); 
                 }
+                readingCounter.Add(start, end);
             }
         }
 
@@ -260,7 +205,7 @@ namespace GlycoSeqApp
                     }
                 }
 
-                var decoy_results = precursorMatcher.Match(task.PrecursorMZ, task.Charge);
+                var decoy_results = decoyPrecursorMatcher.Match(task.PrecursorMZ, task.Charge);
                 if (decoy_results.Count > 0)
                 {
                     // spectrum search
@@ -276,7 +221,7 @@ namespace GlycoSeqApp
                     }
                 }
 
-                counter.Add();
+                searchCounter.Add(0, taskSize);
             }
 
             UpdateTask(tempResults, tempDecoyResults);

@@ -40,7 +40,6 @@ namespace GlycoSeqClassLibrary.engine.search
                 new Dictionary<string, List<model.glycan.IGlycan>>();
             double mass = util.mass.Spectrum.To.Compute(precursor, charge);
 
-
             foreach (var glycan in glycans_)
             {
                 double target = mass - glycan.Mass();
@@ -52,7 +51,7 @@ namespace GlycoSeqClassLibrary.engine.search
                     continue;
 
                 // check pentacore
-                 var composition = glycan.Composition();
+                var composition = glycan.Composition();
                 if (!composition.ContainsKey(model.glycan.Monosaccharide.GlcNAc) 
                     || composition[model.glycan.Monosaccharide.GlcNAc] < 3)
                     continue;

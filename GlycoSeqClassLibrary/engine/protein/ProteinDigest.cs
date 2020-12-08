@@ -23,12 +23,12 @@ namespace GlycoSeqClassLibrary.engine.protein
             enzyme_ = enzyme;
         }
 
-        int MissCleavage() { return miss_cleavage_; }
-        int MinLength() { return min_length_; }
-        Proteases Enzyme() { return enzyme_; }
-        void set_min_length(int length) { min_length_ = length; }
-        void set_miss_cleavage(int num) { miss_cleavage_ = num; }
-        void SetProtease(Proteases enzyme) { enzyme_ = enzyme; }
+        public int MissCleavage() { return miss_cleavage_; }
+        public int MinLength() { return min_length_; }
+        public Proteases Enzyme() { return enzyme_; }
+        public void set_min_length(int length) { min_length_ = length; }
+        public void set_miss_cleavage(int num) { miss_cleavage_ = num; }
+        public void SetProtease(Proteases enzyme) { enzyme_ = enzyme; }
 
         public List<string> Sequences(string sequence, FilterSequence filter)
         {

@@ -29,7 +29,7 @@ namespace GlycoSeqClassLibrary.engine.search
             Dictionary<string, HashSet<int>> results = new Dictionary<string, HashSet<int>>();
 
             // search peaks
-            for(int i = 0; i< peaks.Count; i++)
+            for(int i = 0; i < peaks.Count; i++)
             {
                 IPeak peak = peaks[i];
                 for(int charge = 1; charge < max_charge; charge++)

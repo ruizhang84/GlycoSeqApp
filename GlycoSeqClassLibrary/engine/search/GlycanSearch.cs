@@ -30,7 +30,7 @@ namespace GlycoSeqClassLibrary.engine.search
             Dictionary<string, List<IGlycan>> candidates)
         {
             // init search engine
-                InitSearch(peaks, max_charge);
+            InitSearch(peaks, max_charge);
 
             // init peak nodes
             Dictionary<double, PeakNode> peak_nodes_map = new Dictionary<double, PeakNode>();
@@ -72,9 +72,9 @@ namespace GlycoSeqClassLibrary.engine.search
 
     bool Satisify(string identified_glycan_id, IGlycan glycan)
     {
-        List<int> identified_glycan_table = glycans_map_[identified_glycan_id].Table().ToList();
-        List<int> candidate_glycan_table = glycan.Table().ToList();
-        for(int i = 0; i< identified_glycan_table.Count; i++)
+        int[] identified_glycan_table = glycans_map_[identified_glycan_id].Table();
+        int[] candidate_glycan_table = glycan.Table();
+        for(int i = 0; i < identified_glycan_table.Length; i++)
         {
             if (candidate_glycan_table[i] < identified_glycan_table[i])
                 return false;
@@ -92,8 +92,8 @@ namespace GlycoSeqClassLibrary.engine.search
     }
 
 
-    List<PeakNode> DynamicProgramming(List<IPeak> peaks, Dictionary<double, PeakNode> peak_nodes_map,
-        PriorityQueue<PeakNode> queue)
+    List<PeakNode> DynamicProgramming(List<IPeak> peaks, 
+        Dictionary<double, PeakNode> peak_nodes_map, PriorityQueue<PeakNode> queue)
     {
         List<PeakNode> matched_nodes = new List<PeakNode>();
         while (queue.Count > 0)
@@ -164,10 +164,10 @@ namespace GlycoSeqClassLibrary.engine.search
     void InitPriorityQueue(Dictionary<string, List<IGlycan>> candidate,
         Dictionary<double, PeakNode> peak_nodes_map, PriorityQueue<PeakNode> queue)
     {
-        foreach (var it in candidate.Keys)
+        foreach (var peptide in candidate.Keys)
         {
             // Y1 mass
-            double mass = ComputePeptideMass(it) + util.mass.Glycan.kHexNAc;
+            double mass = ComputePeptideMass(peptide) + util.mass.Glycan.kHexNAc;
             // node matches
             if (!peak_nodes_map.ContainsKey(mass))
             {
@@ -175,7 +175,7 @@ namespace GlycoSeqClassLibrary.engine.search
                 // set mass
                 node.set_mass(mass);
                 // set matches
-                node.Add(it, kY1, new List<int>());
+                node.Add(peptide, kY1, new List<int>());
                 // add node 
                 peak_nodes_map[mass] = node;
                 // enqueue
@@ -184,7 +184,7 @@ namespace GlycoSeqClassLibrary.engine.search
             else
             {
                 // update glycopeptide match
-                peak_nodes_map[mass].Add(it, kY1, new List<int>());
+                peak_nodes_map[mass].Add(peptide, kY1, new List<int>());
             }
         }
     }

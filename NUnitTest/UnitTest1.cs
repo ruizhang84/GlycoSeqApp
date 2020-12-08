@@ -20,6 +20,17 @@ namespace Tests
 {
     public class Tests
     {
+        static string Reverse(string stringToReverse)
+        {
+            char[] stringArray = stringToReverse.ToCharArray();
+            string reverse = string.Empty;
+            for (int i = stringArray.Length - 1; i >= 0; i--)
+            {
+                reverse += stringArray[i];
+            }
+
+            return reverse;
+        }
 
         [Test]
         public void Test1()
@@ -29,20 +40,38 @@ namespace Tests
             // peptides
             IProteinReader proteinReader = new FastaReader();
             List<IProtein> proteins = proteinReader.Read(fasta);
+            List<IProtein> decoyProteins = new List<IProtein>();
+            foreach (IProtein protein in proteins)
+            {
+                IProtein p = new BaseProtein();
+                p.SetSequence(Reverse(protein.Sequence()));
+                decoyProteins.Add(p);
+            }
 
             List<Proteases> proteases = new List<Proteases>()
                 { Proteases.Trypsin, Proteases.GluC };
 
             HashSet<string> peptides = new HashSet<string>();
-            foreach (Proteases enzyme in proteases)
+            
+            ProteinDigest proteinDigest = new ProteinDigest(2, 5, proteases[0]);
+            foreach (IProtein protein in decoyProteins)
             {
-                ProteinDigest proteinDigest = new ProteinDigest(2, 5, enzyme);
-                foreach (IProtein protein in proteins)
+                peptides.UnionWith(proteinDigest.Sequences(protein.Sequence(),
+                    ProteinPTM.ContainsNGlycanSite));
+            }
+
+            for (int i = 1; i < proteases.Count; i++ )
+            {
+                proteinDigest.SetProtease(proteases[i]);
+                List<string> peptidesList = peptides.ToList();
+                foreach (string seq in peptidesList)
                 {
-                    peptides.UnionWith(proteinDigest.Sequences(protein.Sequence(), 
+                    peptides.UnionWith(proteinDigest.Sequences(seq,
                         ProteinPTM.ContainsNGlycanSite));
                 }
             }
+
+            Assert.True(peptides.Contains("KDNLTYVGDGETR"));
 
             // build glycan
             GlycanBuilder glycanBuilder = new GlycanBuilder();
@@ -122,7 +151,7 @@ namespace Tests
                         continue;
 
                     var temp_results = searchAnalyzer.Analyze(i, ms2.GetPeaks(), peptide_results, glycan_results);
-                    
+                    break;
                 }
             }
                

@@ -10,8 +10,8 @@ namespace GlycoSeqClassLibrary.engine.analysis
     {
         double fdr_;
         double cutoff_;
-        List<SearchResult> target_;
-        List<SearchResult> decoy_;
+        List<SearchResult> target_ = new List<SearchResult>();
+        List<SearchResult> decoy_ = new List<SearchResult>();
         public FDRFilter(double fdr)
         {
             fdr_ = fdr;
@@ -51,9 +51,10 @@ namespace GlycoSeqClassLibrary.engine.analysis
                 }
                 // compute fdr rate
                 double rate = (decoy_.Count - j) * 1.0 / (target_.Count + decoy_.Count - i - j + 1);
+                rate = rate * (1.0 + target_.Count / decoy_.Count);
                 if (rate <= fdr_)
                 {
-                    cutoff_ = score;
+                     cutoff_ = score;
                     return;
                 }
                 else
@@ -123,14 +124,14 @@ namespace GlycoSeqClassLibrary.engine.analysis
                 int scan = it.Scan();
                 if (score_map[scan] > it.Score())
                     continue;
-                decoys.Add(it);
+                decoy_.Add(it);
             }
         }
 
 
 
-        public List<SearchResult> Target() { return target_; }
-        public List<SearchResult> Decoy() { return decoy_; }
+        //public List<SearchResult> Target() { return target_; }
+        //public List<SearchResult> Decoy() { return decoy_; }
         public double Cutoff() { return cutoff_; }
 
         public void set_cutoff(double cutoff) { cutoff_ = cutoff; }

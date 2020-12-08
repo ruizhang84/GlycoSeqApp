@@ -52,22 +52,22 @@ namespace GlycoSeqClassLibrary.engine.search
         public void Max(List<IPeak> peaks)
         {
             PeakMatch best = new PeakMatch();
-            foreach (var it in matches_.Keys)
+            foreach (var peptide in matches_.Keys)
             {
-                best[it] = new Dictionary<string, HashSet<int>> ();
+                best[peptide] = new Dictionary<string, HashSet<int>> ();
                 double best_score = 0;
-                foreach (var g in matches_[it].Keys)
+                foreach (var g in matches_[peptide].Keys)
                 {
-                    double score = SearchHelper.ComputePeakScore(peaks, matches_[it][g]);
+                    double score = SearchHelper.ComputePeakScore(peaks, matches_[peptide][g]);
                     if (best_score < score)
                     {
                         best_score = score;
-                        best[it].Clear();
-                        best[it][g] = matches_[it][g];
+                        best[peptide] = new Dictionary<string, HashSet<int>>();
+                        best[peptide][g] = matches_[peptide][g];
                     }
                     else if (best_score == score)
                     {
-                        best[it][g] = matches_[it][g];
+                        best[peptide][g] = matches_[peptide][g];
                     }
                 }
             }

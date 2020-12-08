@@ -59,6 +59,7 @@
       <DependentUpon>ConfigureWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MultiThreadingSearch.cs" />
+    <Compile Include="MultiThreadingSearchHelper.cs" />
     <Compile Include="SearchingParameters.cs" />
     <Compile Include="SearchWindow.xaml.cs">
       <DependentUpon>SearchWindow.xaml</DependentUpon>

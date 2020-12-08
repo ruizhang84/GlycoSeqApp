@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GlycoSeqApp"
         mc:Ignorable="d"
-        Title="SearchWindow" Height="110" Width="400">
+        Title="SearchWindow" Height="140" Width="400">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,14 +14,24 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            <Border  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="Black" Margin="10">
-                <ProgressBar Height="15" Width="350" Minimum="0" Maximum="1000" Name="SearchingStatus"/>
-            </Border>
+            <StackPanel>
+                <Grid  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
+                    <ProgressBar Height="15" Width="350" Minimum="0" Maximum="1000" Name="ReadingStatus"/>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"> Reading</TextBlock>
+                </Grid>
+                <Grid  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
+                    <ProgressBar Height="15" Width="350" Minimum="0" Maximum="1000" Name="SearchingStatus"/>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"> Processing</TextBlock>
+                </Grid>
+            </StackPanel>
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Name="ProgessStatus" FontSize="12"/>
         </Grid>
-        <TextBlock Text="Waiting..." Grid.Row="1" Height="15" Width="350" Name="Signal" Margin="0"/>
-        <Grid Grid.Row="2">
-            <Button Name="buttonRun" Content="Run" Margin="270,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="20" Width="74" FontSize="12" Click="Button_Click"/>
+        <Grid Grid.Row="1">
+            <TextBlock Text="Waiting..." Grid.Row="1" Height="15" Width="350" Name="Signal" Margin="0"/>
         </Grid>
+        <!--<Grid Grid.Row="2">
+            <Button Name="buttonRun" Content="Run" Margin="270,0,0,0" HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom" Height="20" Width="74" FontSize="12" Click="Button_Click"/>
+        </Grid>-->
     </Grid>
 </Window>

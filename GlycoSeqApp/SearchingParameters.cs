@@ -10,7 +10,7 @@ namespace GlycoSeqApp
     public class SearchingParameters
     {
         //spectrum
-        public double MS1Tolerance { get; set; } = 20;
+        public double MS1Tolerance { get; set; } = 10;
         public double MSMSTolerance { get; set; } = 0.01;
         public ToleranceBy MS1ToleranceBy { get; set; } = ToleranceBy.PPM;
         public ToleranceBy MS2ToleranceBy { get; set; } = ToleranceBy.Dalton;
@@ -35,9 +35,8 @@ namespace GlycoSeqApp
         public double FDRValue { get; set; } = 0.01;
 
         //file
-        public string MSMSFile { get; set; }
+        public List<string> MSMSFiles { get; set; } = new List<string>();
         public string FastaFile { get; set; }
-        public string OutputFile { get; set; }
 
         SearchingParameters()
         {
@@ -72,7 +71,7 @@ namespace GlycoSeqApp
     public class ConfigureParameters
     {
         //spectrum
-        public double MS1Tolerance { get; set; } = 20;
+        public double MS1Tolerance { get; set; } = 10;
         public double MSMSTolerance { get; set; } = 0.01;
         public ToleranceBy MS1ToleranceBy { get; set; } = ToleranceBy.PPM;
         public ToleranceBy MS2ToleranceBy { get; set; } = ToleranceBy.Dalton;

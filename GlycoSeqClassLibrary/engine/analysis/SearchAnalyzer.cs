@@ -44,7 +44,9 @@ namespace GlycoSeqClassLibrary.engine.analysis
             {
                 foreach(string p in peptides_map[peptide])
                 {
-                
+                    if (!glycans_map.ContainsKey(peptide))
+                        continue;
+
                     foreach(string g in glycans_map[peptide])
                     {
                         // get index
@@ -80,15 +82,22 @@ namespace GlycoSeqClassLibrary.engine.analysis
             HashSet<int> peptides_index, HashSet<int> glycans_index)
         {
             double score = 0;
+            double glycan_score = 0;
+            double peptide_score = 0;
             foreach(int index in peptides_index)
             {
-                score += Math.Log(peaks[index].GetIntensity());
+                peptide_score += Math.Log(peaks[index].GetIntensity());
             }
             foreach(int index in glycans_index)
             {
-                score += Math.Log(peaks[index].GetIntensity());
+                glycan_score += Math.Log(peaks[index].GetIntensity());
             }
-            return score;
+            foreach(IPeak peak in peaks)
+            {
+                score += Math.Log(peak.GetIntensity());
+            }
+
+            return Math.Sqrt(peptide_score * glycan_score) / score;
         }
     }
 }

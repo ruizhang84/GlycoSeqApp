@@ -1,6 +1,9 @@
 ﻿using GlycoSeqClassLibrary.engine.analysis;
 using GlycoSeqClassLibrary.engine.glycan;
+using GlycoSeqClassLibrary.engine.protein;
 using GlycoSeqClassLibrary.model.glycan;
+using GlycoSeqClassLibrary.model.protein;
+using GlycoSeqClassLibrary.util.io;
 using SpectrumData;
 using SpectrumData.Reader;
 using System;
@@ -27,86 +30,73 @@ namespace GlycoSeqApp
     /// </summary>
     public partial class SearchWindow : Window
     {
-
+        int ReadingCounter;
         int progressCounter;
-        int start;
-        int end;
         public SearchWindow()
         {
             InitializeComponent();
+            InitProcess();
+        }
 
-            ISpectrumReader reader = new ThermoRawSpectrumReader();
-            reader.Init(SearchingParameters.Access.MSMSFile);
-            start = reader.GetFirstScan();
-            end = reader.GetLastScan();
+        private async void InitProcess()
+        {
+            await Task.Run(Process);
         }
 
         private Task Process()
         {
-            progressCounter = 0;
-            Counter counter = new Counter();
-            counter.progressChange += SearchProgressChanged;
+           
+            Counter readerCounter = new Counter();
+            Counter searchCounter = new Counter();
+            readerCounter.progressChange += ReadProgressChanged;
+            searchCounter.progressChange += SearchProgressChanged;           
 
-            UpdateSignal("Searching...");
-            MultiThreadingSearch search = new MultiThreadingSearch(counter);
-            search.Run();
+            // build pepeptides
+            IProteinReader proteinReader = new FastaReader();
+            List<IProtein> proteins = proteinReader.Read(SearchingParameters.Access.FastaFile);
+            List<IProtein> decoyProteins = new List<IProtein>();
+            foreach (IProtein protein in proteins)
+            {
+                IProtein p = new BaseProtein();
+                p.SetSequence(MultiThreadingSearchHelper.Reverse(protein.Sequence()));
+                decoyProteins.Add(p);
+            }
+            List<string> peptides = 
+                MultiThreadingSearchHelper.GeneratePeptides(proteins);
+            List<string> decoyPeptides = 
+                MultiThreadingSearchHelper.GeneratePeptides(decoyProteins);
 
-            UpdateSignal("Analyzing...");
-            List<SearchResult> targets = search.Target();
-            List<SearchResult> decoys = search.Decoy();
-            Analyze(targets, decoys);
+            // build glycans
+            GlycanBuilder glycanBuilder = new GlycanBuilder();
+            glycanBuilder.Build();
+
+            foreach(string file in SearchingParameters.Access.MSMSFiles)
+            {
+                progressCounter = 0;
+                ReadingCounter = 0;
+                UpdateSignal("Searching...");
+                MultiThreadingSearch search =
+                    new MultiThreadingSearch(file, readerCounter, searchCounter,
+                        peptides, decoyPeptides, glycanBuilder);
+                search.Run();
+                UpdateSignal("Analyzing...");
+                Analyze(file, search.Target(), search.Decoy(), glycanBuilder);
+            }
 
             UpdateSignal("Done");
             return Task.CompletedTask;
         }
 
-        private void ReportResults(List<SearchResult> results)
-        {
-            GlycanBuilder glycanBuilder = new GlycanBuilder();
-            glycanBuilder.Build();
-            Dictionary<string, IGlycan> glycans_map = glycanBuilder.GlycanMaps();
-
-            List<SearchResult> res = new List<SearchResult>();
-            HashSet<string> seen = new HashSet<string>();
-            foreach (var it in results)
-            {
-                string glycan = glycans_map[it.Glycan()].Name();
-                string key = it.Scan().ToString() + "|" + it.ModifySite().ToString() + "|" +
-                    it.Sequence() + "|" + glycan;
-                if (!seen.Contains(key))
-                {
-                    seen.Add(key);
-                    SearchResult r = it;
-                    r.set_glycan(glycan);
-                    res.Add(r);
-                }
-            }
-
-            using (FileStream ostrm = new FileStream(SearchingParameters.Access.OutputFile,
-                FileMode.OpenOrCreate, FileAccess.Write))
-            {
-                using (StreamWriter writer = new StreamWriter(ostrm))
-                {
-                    writer.WriteLine("scan,peptide,glycan,site,score");
-                    foreach(SearchResult r in res)
-                    {
-                        writer.WriteLine(r.Scan().ToString() + ", " + r.Sequence() + ","
-                            + r.Glycan() + "," + r.ModifySite().ToString() + "," + r.Score().ToString());
-                        writer.Flush();
-                    }
-                }
-            }
-            
-
-        }
-
-        private void Analyze(List<SearchResult> targets, List<SearchResult> decoys)
+        private void Analyze(string msPath, List<SearchResult> targets, List<SearchResult> decoys, 
+            GlycanBuilder glycanBuilder)
         {
             FDRFilter filter = new FDRFilter(SearchingParameters.Access.FDRValue);
             filter.set_data(targets, decoys);
             filter.Init();
             List<SearchResult> results = filter.Filter();
-            ReportResults(results);
+            string path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(msPath),
+                System.IO.Path.GetFileNameWithoutExtension(msPath) + ".csv");
+            MultiThreadingSearchHelper.ReportResults(path, results, glycanBuilder.GlycanMaps());
         }
 
         private void UpdateSignal(string signal)
@@ -116,44 +106,42 @@ namespace GlycoSeqApp
                 new ThreadStart(() => Signal.Text = signal));
         }
 
-        private void UpdateProgress()
+        private void UpdateProgress(int start, int end)
         {
             Dispatcher.BeginInvoke(
                 DispatcherPriority.Normal,
                 new ThreadStart(() =>
                 {
                     SearchingStatus.Value = progressCounter * 1.0 / (end - start) * 1000.0;
-                    ProgessStatus.Text = progressCounter.ToString();
                 }));
         }
 
-        private void SearchProgressChanged(object sender, EventArgs e)
+        private void Readingprogress(int start, int end)
+        {
+            Dispatcher.BeginInvoke(
+                DispatcherPriority.Normal,
+                new ThreadStart(() =>
+                {
+                    ReadingStatus.Value = ReadingCounter * 1.0 / (end - start) * 1000.0;
+                }));
+        }
+
+        private void SearchProgressChanged(object sender, ProgressingEventArgs e)
         {
             Interlocked.Increment(ref progressCounter);
-            UpdateProgress();
+            UpdateProgress(e.Start, e.End);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void ReadProgressChanged(object sender, ProgressingEventArgs e)
         {
-            buttonRun.IsEnabled = false;
-            Task.Run(Process);
-        }
-    }
-
-    public class Counter
-    {
-        public event EventHandler progressChange;
-
-        protected virtual void OnProgressChanged(EventArgs e)
-        {
-            EventHandler handler = progressChange;
-            handler?.Invoke(this, e);
+            Interlocked.Increment(ref ReadingCounter);
+            Readingprogress(e.Start, e.End);
         }
 
-        public void Add()
-        {
-            EventArgs e = new EventArgs();
-            OnProgressChanged(e);
-        }
+        //private void Button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    buttonRun.IsEnabled = false;
+        //    Task.Run(Process);
+        //}
     }
 }

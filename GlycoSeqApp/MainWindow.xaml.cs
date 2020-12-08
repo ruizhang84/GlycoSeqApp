@@ -26,20 +26,36 @@ namespace GlycoSeqApp
             InitializeComponent();
         }
 
-        private void MSMSFileName_Click(object sender, RoutedEventArgs e)
+        private void MSMSFileNames_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog fileNameDialog = new OpenFileDialog();
-            fileNameDialog.Filter = "Raw File|*.raw";
-            fileNameDialog.Title = "Open a MS2 File";
+            OpenFileDialog fileNamesDialog = new OpenFileDialog();
+            fileNamesDialog.Filter = "Raw File|*.raw";
+            fileNamesDialog.Title = "Open a MS2 File";
+            fileNamesDialog.Multiselect = true;
+            fileNamesDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            if (fileNameDialog.ShowDialog() == true)
+            if (fileNamesDialog.ShowDialog() == true)
             {
-                Binding fileNameBinding = new Binding();
-                fileNameBinding.Path = new PropertyPath("FileName");
-                fileNameBinding.Source = fileNameDialog;
-                fileNameBinding.Mode = BindingMode.OneWay;
-                displayFileName.SetBinding(TextBox.TextProperty, fileNameBinding);
-                SearchingParameters.Access.MSMSFile = displayFileName.Text;
+                foreach (string filename in fileNamesDialog.FileNames)
+                {
+                    if (!SearchingParameters.Access.MSMSFiles.Contains(filename))
+                    {
+                        lbFiles.Items.Add(filename);
+                        SearchingParameters.Access.MSMSFiles.Add(filename);
+                    }
+                }
+
+            }
+        }
+
+        private void DeselectFiles_Click(object sender, RoutedEventArgs e)
+        {
+            if (lbFiles.SelectedItem != null)
+            {
+                string filename = lbFiles.SelectedItem.ToString();
+                lbFiles.Items.Remove(lbFiles.SelectedItem);
+                if (SearchingParameters.Access.MSMSFiles.Contains(filename))
+                    SearchingParameters.Access.MSMSFiles.Remove(filename);
             }
         }
 
@@ -60,26 +76,9 @@ namespace GlycoSeqApp
             }
         }
 
-        private void OutputFileName_Click(object sender, RoutedEventArgs e)
-        {
-            SaveFileDialog fileNameDialog = new SaveFileDialog();
-            fileNameDialog.Filter = "CSV Files (*.csv)|*.csv";
-            fileNameDialog.Title = "Save Output File";
-
-            if (fileNameDialog.ShowDialog() == true)
-            {
-                Binding fileNameBinding = new Binding();
-                fileNameBinding.Path = new PropertyPath("FileName");
-                fileNameBinding.Source = fileNameDialog;
-                fileNameBinding.Mode = BindingMode.OneWay;
-                displayOutput.SetBinding(TextBox.TextProperty, fileNameBinding);
-                SearchingParameters.Access.OutputFile = displayOutput.Text;
-            }
-        }
-
         private void Search_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(displayFileName.Text))
+            if (SearchingParameters.Access.MSMSFiles.Count == 0)
             {
                 MessageBox.Show("Please choose MS/MS files");
             }
@@ -87,10 +86,6 @@ namespace GlycoSeqApp
             {
                 MessageBox.Show("Please choose Fasta files");
 
-            }
-            else if (string.IsNullOrEmpty(displayOutput.Text))
-            {
-                MessageBox.Show("Please choose Output files");
             }
             else
             {

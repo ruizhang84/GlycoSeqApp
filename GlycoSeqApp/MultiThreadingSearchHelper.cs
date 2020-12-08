@@ -13,8 +13,7 @@ namespace GlycoSeqApp
 {
     public class ProgressingEventArgs : EventArgs
     {
-        public int Start { get; set; }
-        public int End { get; set; }
+        public int Total { get; set; }
     }
 
     public class Counter
@@ -27,12 +26,11 @@ namespace GlycoSeqApp
             handler?.Invoke(this, e);
         }
 
-        public void Add(int start, int end)
+        public void Add(int total)
         {
             ProgressingEventArgs e = new ProgressingEventArgs
             {
-                Start = start,
-                End = end
+                Total = total
             };
             OnProgressChanged(e);
         }

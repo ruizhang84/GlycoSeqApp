@@ -71,8 +71,7 @@ namespace GlycoSeqApp
             glycanBuilder.Build();
 
             foreach(string file in SearchingParameters.Access.MSMSFiles)
-            {
-                progressCounter = 0;
+            { 
                 ReadingCounter = 0;
                 UpdateSignal("Searching...");
                 MultiThreadingSearch search =
@@ -106,42 +105,36 @@ namespace GlycoSeqApp
                 new ThreadStart(() => Signal.Text = signal));
         }
 
-        private void UpdateProgress(int start, int end)
+        private void UpdateProgress(int total)
         {
             Dispatcher.BeginInvoke(
                 DispatcherPriority.Normal,
                 new ThreadStart(() =>
                 {
-                    SearchingStatus.Value = progressCounter * 1.0 / (end - start) * 1000.0;
+                    SearchingStatus.Value = progressCounter * 1.0 / total * 1000.0;
                 }));
         }
 
-        private void Readingprogress(int start, int end)
+        private void Readingprogress(int total)
         {
             Dispatcher.BeginInvoke(
                 DispatcherPriority.Normal,
                 new ThreadStart(() =>
                 {
-                    ReadingStatus.Value = ReadingCounter * 1.0 / (end - start) * 1000.0;
+                    ReadingStatus.Value = ReadingCounter * 1.0 / total * 1000.0;
                 }));
         }
 
         private void SearchProgressChanged(object sender, ProgressingEventArgs e)
         {
             Interlocked.Increment(ref progressCounter);
-            UpdateProgress(e.Start, e.End);
+            UpdateProgress(e.Total);
         }
 
         private void ReadProgressChanged(object sender, ProgressingEventArgs e)
         {
             Interlocked.Increment(ref ReadingCounter);
-            Readingprogress(e.Start, e.End);
+            Readingprogress(e.Total);
         }
-
-        //private void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    buttonRun.IsEnabled = false;
-        //    Task.Run(Process);
-        //}
     }
 }

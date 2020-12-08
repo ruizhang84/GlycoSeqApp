@@ -112,51 +112,68 @@ namespace GlycoSeqApp
             IProcess process = new LocalNeighborPicking();
             reader.Init(msPath);
             
-            ISpectrum ms1 = null;
-            List<IPeak> majorPeaks = new List<IPeak>();
             int start = reader.GetFirstScan();
             int end = reader.GetLastScan();
 
+            Dictionary<int, List<int>> scanGroup = new Dictionary<int, List<int>>();
+            int current = -1;
             for (int i = start; i < end; i++)
             {
-                if (reader.GetMSnOrder(i) < 2)
+                if (reader.GetMSnOrder(i) == 1)
                 {
-                    ms1 = reader.GetSpectrum(i);
-                    majorPeaks = picking.Process(ms1.GetPeaks());
+                    current = i;
+                    scanGroup[i] = new List<int>();
                 }
-                else
+                else if (reader.GetMSnOrder(i)  == 2)
                 {
-                    double mz = reader.GetPrecursorMass(i, reader.GetMSnOrder(i));
-                    if (ms1.GetPeaks()
-                        .Where(p => p.GetMZ() > mz - searchRange && p.GetMZ() < mz + searchRange)
-                        .Count() == 0)
-                        continue;
-
-                    Patterson charger = new Patterson();
-                    int charge = charger.Charge(ms1.GetPeaks(), mz - searchRange, mz + searchRange);
-
-                    // find evelope cluster
-                    EnvelopeProcess envelope = new EnvelopeProcess();
-                    var cluster = envelope.Cluster(majorPeaks, mz, charge);
-                    if (cluster.Count == 0)
-                        continue;
-
-                    // find monopeak
-                    Averagine averagine = new Averagine(AveragineType.GlycoPeptide);
-                    BrainCSharp braincs = new BrainCSharp();
-                    MonoisotopicSearcher searcher = new MonoisotopicSearcher(averagine, braincs);
-                    MonoisotopicScore result = searcher.Search(mz, charge, cluster);
-                    double precursorMZ = result.GetMZ();
-
-                    // search
-                    ISpectrum ms2 = reader.GetSpectrum(i);
-                    ms2 = process.Process(ms2);
-
-                    SearchTask searchTask = new SearchTask(i, ms2.GetPeaks(), precursorMZ, charge);
-                    tasks.Enqueue(searchTask); 
+                    scanGroup[current].Add(i); 
                 }
-                readingCounter.Add(start, end);
             }
+
+            Parallel.ForEach(scanGroup,
+                new ParallelOptions { MaxDegreeOfParallelism = SearchingParameters.Access.ThreadNums },
+                (scanPair) =>
+                {
+                    if (scanPair.Value.Count > 0)
+                    {
+                        ISpectrum ms1 = reader.GetSpectrum(scanPair.Key);
+                        List<IPeak> majorPeaks = picking.Process(ms1.GetPeaks());
+                        foreach (int i in scanPair.Value)
+                        {
+                            double mz = reader.GetPrecursorMass(i, reader.GetMSnOrder(i));
+                            if (ms1.GetPeaks()
+                                .Where(p => p.GetMZ() > mz - searchRange && p.GetMZ() < mz + searchRange)
+                                .Count() == 0)
+                                continue;
+
+                            Patterson charger = new Patterson();
+                            int charge = charger.Charge(ms1.GetPeaks(), mz - searchRange, mz + searchRange);
+
+                            // find evelope cluster
+                            EnvelopeProcess envelope = new EnvelopeProcess();
+                            var cluster = envelope.Cluster(majorPeaks, mz, charge);
+                            if (cluster.Count == 0)
+                                continue;
+
+                            // find monopeak
+                            Averagine averagine = new Averagine(AveragineType.GlycoPeptide);
+                            BrainCSharp braincs = new BrainCSharp();
+                            MonoisotopicSearcher searcher = new MonoisotopicSearcher(averagine, braincs);
+                            MonoisotopicScore result = searcher.Search(mz, charge, cluster);
+                            double precursorMZ = result.GetMZ();
+
+                            // search
+                            ISpectrum ms2 = reader.GetSpectrum(i);
+                            ms2 = process.Process(ms2);
+
+                            SearchTask searchTask = new SearchTask(i, ms2.GetPeaks(), precursorMZ, charge);
+                            tasks.Enqueue(searchTask);
+                        }
+                    }
+                    readingCounter.Add(scanGroup.Count);
+                });
+
+           
         }
 
 
@@ -221,7 +238,7 @@ namespace GlycoSeqApp
                     }
                 }
 
-                searchCounter.Add(0, taskSize);
+                searchCounter.Add(taskSize);
             }
 
             UpdateTask(tempResults, tempDecoyResults);

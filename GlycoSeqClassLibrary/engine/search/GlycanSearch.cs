@@ -84,6 +84,8 @@ namespace GlycoSeqClassLibrary.engine.search
     {
         int[] identified_glycan_table = glycans_map_[identified_glycan_id].Table();
         int[] candidate_glycan_table = glycan.Table();
+        if (identified_glycan_table.Count() != candidate_glycan_table.Count())
+            return false;
         for(int i = 0; i < identified_glycan_table.Length; i++)
         {
             if (candidate_glycan_table[i] < identified_glycan_table[i])

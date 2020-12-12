@@ -232,7 +232,7 @@ namespace GlycoSeqApp
             {
                 ConfigureParameters.Access.ComplexInclude = ComplexNGlycan.IsChecked == true;
                 ConfigureParameters.Access.HybridInclude = HybridNGlycan.IsChecked == true;
-                ConfigureParameters.Access.MannoseInclude = HighMannose.IsChecked == true;
+                ConfigureParameters.Access.MannoseInclude = HighMannose.IsChecked == true; 
             }
 
             return true;

@@ -67,7 +67,15 @@ namespace GlycoSeqApp
                 MultiThreadingSearchHelper.GeneratePeptides(decoyProteins);
 
             // build glycans
-            GlycanBuilder glycanBuilder = new GlycanBuilder();
+            GlycanBuilder glycanBuilder = new GlycanBuilder(
+                SearchingParameters.Access.HexNAc, 
+                SearchingParameters.Access.Hex,
+                SearchingParameters.Access.Fuc,
+                SearchingParameters.Access.NeuAc,
+                SearchingParameters.Access.NeuGc,
+                SearchingParameters.Access.ComplexInclude,
+                SearchingParameters.Access.HybridInclude,
+                SearchingParameters.Access.MannoseInclude);
             glycanBuilder.Build();
 
             foreach(string file in SearchingParameters.Access.MSMSFiles)

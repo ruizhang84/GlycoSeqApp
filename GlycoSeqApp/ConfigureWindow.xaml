@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GlycoSeqApp"
         mc:Ignorable="d"
-        Title="ConfigureWindow" Height="280" Width="700">
+        Title="ConfigureWindow" Height="340" Width="700">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -90,8 +90,22 @@
             </StackPanel>
             <Separator VerticalAlignment="Bottom" Grid.Row="2"/>
         </Grid>
-
         <Grid Grid.Row="3" Margin="10, 0, 10, 0">
+            <StackPanel>
+                <Label Content="Complex Types:" />
+                <StackPanel Margin="4" Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type CheckBox}">
+                            <Setter Property="Margin" Value="0,0,20,0"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <CheckBox Name="ComplexNGlycan" Content="Complex"/>
+                    <CheckBox Name="HybridNGlycan" Content="Hybrid"/>
+                    <CheckBox Name="HighMannose" Content="High Mannose"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="4" Margin="10, 0, 10, 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -112,7 +126,7 @@
             <Separator VerticalAlignment="Bottom" Grid.Row="4"/>
         </Grid>
 
-        <Grid Grid.Row="4" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 10, 0, 0">
+        <Grid Grid.Row="5" HorizontalAlignment="Right" VerticalAlignment="Center">
             <Button x:Name="Save"  Content="Save" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Margin="0,0,160,0" Click="Save_Click" />
             <Button x:Name="Cancel"  Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Margin="0,0,70,0" Click="Cancel_Click" />
         </Grid>

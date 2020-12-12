@@ -204,7 +204,10 @@ namespace GlycoSeqApp
 
             ISearch<int> extraSearcher = new BucketSearch<int>(
                 SearchingParameters.Access.MS2ToleranceBy, SearchingParameters.Access.MSMSTolerance);
-            GlycanSearch glycanSearcher = new GlycanSearch(extraSearcher, glycanBuilder.GlycanMaps());
+            GlycanSearch glycanSearcher = new GlycanSearch(extraSearcher, glycanBuilder.GlycanMaps(), 
+                SearchingParameters.Access.ComplexInclude, 
+                SearchingParameters.Access.HybridInclude, 
+                SearchingParameters.Access.MannoseInclude);
            
             SearchAnalyzer searchAnalyzer = new SearchAnalyzer();
 

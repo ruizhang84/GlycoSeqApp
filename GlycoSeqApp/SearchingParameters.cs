@@ -21,7 +21,9 @@ namespace GlycoSeqApp
         public int MiniPeptideLength { get; set; } = 5;
 
         //glycan
-        public List<string> GlycanTypes { get; set; } = new List<string> { "Complex" };
+        public bool ComplexInclude { get; set; } = true;
+        public bool HybridInclude { get; set; } = false;
+        public bool MannoseInclude { get; set; } = false;
         public int HexNAc { get; set; } = 12;
         public int Hex { get; set; } = 12;
         public int Fuc { get; set; } = 5;
@@ -51,7 +53,9 @@ namespace GlycoSeqApp
             DigestionEnzyme = ConfigureParameters.Access.DigestionEnzyme.ToList();
             MissCleavage = ConfigureParameters.Access.MissCleavage;
             MiniPeptideLength = ConfigureParameters.Access.MiniPeptideLength;
-            GlycanTypes = ConfigureParameters.Access.GlycanTypes.ToList();
+            ComplexInclude = ConfigureParameters.Access.ComplexInclude;
+            HybridInclude = ConfigureParameters.Access.HybridInclude;
+            MannoseInclude = ConfigureParameters.Access.MannoseInclude;
             HexNAc = ConfigureParameters.Access.HexNAc;
             Hex = ConfigureParameters.Access.Hex;
             Fuc = ConfigureParameters.Access.Fuc;
@@ -81,7 +85,9 @@ namespace GlycoSeqApp
         public int MiniPeptideLength { get; set; } = 5;
 
         //glycan
-        public List<string> GlycanTypes { get; set; } = new List<string> { "Complex" };
+        public bool ComplexInclude { get; set; } = true;
+        public bool HybridInclude { get; set; } = false;
+        public bool MannoseInclude { get; set; } = false;
         public int HexNAc { get; set; } = 12;
         public int Hex { get; set; } = 12;
         public int Fuc { get; set; } = 5;

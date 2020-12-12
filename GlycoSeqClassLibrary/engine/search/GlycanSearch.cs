@@ -16,15 +16,23 @@ namespace GlycoSeqClassLibrary.engine.search
         readonly string kY1 = "1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
         readonly string kY1_hybrid = "1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
         readonly string kY1_mannose = "1 0 0 0 0 0";
+        public bool ComplexInclude { get; set; }
+        public bool HybridInclude { get; set; }
+        public bool HighMannoseInclude { get; set; }
+
         const int kMissing = 5;
         Dictionary<string, double> peptide_mass_ 
             = new Dictionary<string, double>();
 
         public GlycanSearch(ISearch<int> searcher,
-            Dictionary<string, IGlycan> glycans_map)
+            Dictionary<string, IGlycan> glycans_map, 
+            bool complex = true, bool hybrid = false, bool highMannose = false)
         {
             searcher_ = searcher;
             glycans_map_ = glycans_map;
+            ComplexInclude = complex;
+            HybridInclude = hybrid;
+            HighMannoseInclude = highMannose;
         }
 
         // peptide seq, glycan*
@@ -177,9 +185,12 @@ namespace GlycoSeqClassLibrary.engine.search
                 // set mass
                 node.set_mass(mass);
                 // set matches
-                node.Add(peptide, kY1, new List<int>());
-                node.Add(peptide, kY1_hybrid, new List<int>());
-                node.Add(peptide, kY1_mannose, new List<int>());
+                if (ComplexInclude)
+                    node.Add(peptide, kY1, new List<int>());
+                if (HybridInclude)
+                    node.Add(peptide, kY1_hybrid, new List<int>());
+                if (HighMannoseInclude)
+                    node.Add(peptide, kY1_mannose, new List<int>());
                 // add node 
                 peak_nodes_map[mass] = node;
                 // enqueue
@@ -188,9 +199,12 @@ namespace GlycoSeqClassLibrary.engine.search
             else
             {
                 // update glycopeptide match
-                peak_nodes_map[mass].Add(peptide, kY1, new List<int>());
-                peak_nodes_map[mass].Add(peptide, kY1_hybrid, new List<int>());
-                peak_nodes_map[mass].Add(peptide, kY1_mannose, new List<int>());
+                if (ComplexInclude)
+                    peak_nodes_map[mass].Add(peptide, kY1, new List<int>());
+                if (HybridInclude)
+                    peak_nodes_map[mass].Add(peptide, kY1_hybrid, new List<int>());
+                if (HighMannoseInclude)
+                    peak_nodes_map[mass].Add(peptide, kY1_mannose, new List<int>());
             }
         }
     }

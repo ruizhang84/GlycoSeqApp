@@ -65,6 +65,13 @@ namespace GlycoSeqApp
             DigestionEnzymes.Text = string.Join("+", SearchingParameters.Access.DigestionEnzyme);
             MissCleave.Text = SearchingParameters.Access.MissCleavage.ToString();
             MiniPeptideLength.Text = SearchingParameters.Access.MiniPeptideLength.ToString();
+
+            if (SearchingParameters.Access.ComplexInclude)
+                ComplexNGlycan.IsChecked = true;
+            if (SearchingParameters.Access.HybridInclude)
+                HybridNGlycan.IsChecked = true;
+            if (SearchingParameters.Access.MannoseInclude)
+                HighMannose.IsChecked = true;
  
             HexNAc.Text = SearchingParameters.Access.HexNAc.ToString();
             Hex.Text = SearchingParameters.Access.Hex.ToString();
@@ -215,6 +222,18 @@ namespace GlycoSeqApp
                 MessageBox.Show("NeuGc value is invalid!");
                 return false;
             }
+            if (ComplexNGlycan.IsChecked == false &&
+                HybridNGlycan.IsChecked == false && HighMannose.IsChecked == false)
+            {
+                MessageBox.Show("Choose at least one NGlycan type!");
+                return false;
+            }
+            else
+            {
+                ConfigureParameters.Access.ComplexInclude = ComplexNGlycan.IsChecked == true;
+                ConfigureParameters.Access.HybridInclude = HybridNGlycan.IsChecked == true;
+                ConfigureParameters.Access.MannoseInclude = HighMannose.IsChecked == true;
+            }
 
             return true;
         }
@@ -287,5 +306,6 @@ namespace GlycoSeqApp
                 ConfigureParameters.Access.DigestionEnzyme.Add("Pepsin");
             DigestionEnzymes.Text = string.Join("+", ConfigureParameters.Access.DigestionEnzyme);
         }
+
     }
 }

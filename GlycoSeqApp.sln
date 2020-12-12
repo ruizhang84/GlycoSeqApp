@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrecursorIonClassLibrary", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectrumDataReader", "ThermoRawReader\SpectrumDataReader.csproj", "{DB0BF4E4-76D6-403C-9D37-BD230961EA43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTest", "NUnitTest\NUnitTest.csproj", "{2A1D10E7-5439-4CE1-9668-9B56CE24BAC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTest", "NUnitTest\NUnitTest.csproj", "{2A1D10E7-5439-4CE1-9668-9B56CE24BAC3}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GlycoSeqSetup", "GlycoSeqSetup\GlycoSeqSetup.vdproj", "{B4E1CA2E-B0FC-4B6A-8076-F8938057A209}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,7 +40,9 @@ Global
 		{2A1D10E7-5439-4CE1-9668-9B56CE24BAC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2A1D10E7-5439-4CE1-9668-9B56CE24BAC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A1D10E7-5439-4CE1-9668-9B56CE24BAC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2A1D10E7-5439-4CE1-9668-9B56CE24BAC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4E1CA2E-B0FC-4B6A-8076-F8938057A209}.Debug|Any CPU.ActiveCfg = Debug
+		{B4E1CA2E-B0FC-4B6A-8076-F8938057A209}.Release|Any CPU.ActiveCfg = Release
+		{B4E1CA2E-B0FC-4B6A-8076-F8938057A209}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

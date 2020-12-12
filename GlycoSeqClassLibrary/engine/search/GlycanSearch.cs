@@ -14,6 +14,8 @@ namespace GlycoSeqClassLibrary.engine.search
         ISearch<int> searcher_;
         Dictionary<string, IGlycan> glycans_map_;
         readonly string kY1 = "1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+        readonly string kY1_hybrid = "1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+        readonly string kY1_mannose = "1 0 0 0 0 0";
         const int kMissing = 5;
         Dictionary<string, double> peptide_mass_ 
             = new Dictionary<string, double>();
@@ -176,6 +178,8 @@ namespace GlycoSeqClassLibrary.engine.search
                 node.set_mass(mass);
                 // set matches
                 node.Add(peptide, kY1, new List<int>());
+                node.Add(peptide, kY1_hybrid, new List<int>());
+                node.Add(peptide, kY1_mannose, new List<int>());
                 // add node 
                 peak_nodes_map[mass] = node;
                 // enqueue
@@ -185,6 +189,8 @@ namespace GlycoSeqClassLibrary.engine.search
             {
                 // update glycopeptide match
                 peak_nodes_map[mass].Add(peptide, kY1, new List<int>());
+                peak_nodes_map[mass].Add(peptide, kY1_hybrid, new List<int>());
+                peak_nodes_map[mass].Add(peptide, kY1_mannose, new List<int>());
             }
         }
     }

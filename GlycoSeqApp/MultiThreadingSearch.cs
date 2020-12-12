@@ -141,13 +141,19 @@ namespace GlycoSeqApp
                         foreach (int i in scanPair.Value)
                         {
                             double mz = reader.GetPrecursorMass(i, reader.GetMSnOrder(i));
-                            if (ms1.GetPeaks()
+                            int numPeaks = ms1.GetPeaks()
                                 .Where(p => p.GetMZ() > mz - searchRange && p.GetMZ() < mz + searchRange)
-                                .Count() == 0)
+                                .Count();
+                            if (numPeaks == 0)
                                 continue;
 
-                            Patterson charger = new Patterson();
+                            ICharger charger = new Patterson();
                             int charge = charger.Charge(ms1.GetPeaks(), mz - searchRange, mz + searchRange);
+                            if (charge > 5 && numPeaks > 1)
+                            {
+                                charger = new Fourier();
+                                charge = charger.Charge(ms1.GetPeaks(), mz - searchRange, mz + searchRange);
+                            }
 
                             // find evelope cluster
                             EnvelopeProcess envelope = new EnvelopeProcess();
@@ -199,7 +205,7 @@ namespace GlycoSeqApp
             ISearch<int> extraSearcher = new BucketSearch<int>(
                 SearchingParameters.Access.MS2ToleranceBy, SearchingParameters.Access.MSMSTolerance);
             GlycanSearch glycanSearcher = new GlycanSearch(extraSearcher, glycanBuilder.GlycanMaps());
-
+           
             SearchAnalyzer searchAnalyzer = new SearchAnalyzer();
 
             SearchTask task;
@@ -216,11 +222,14 @@ namespace GlycoSeqApp
                         var glycan_results = glycanSearcher.Search(task.Peaks, task.Charge, pre_results);
                         if (glycan_results.Count > 0)
                         {
-                            tempResults.AddRange(
-                                searchAnalyzer.Analyze(task.Scan, task.Peaks, peptide_results, glycan_results));
+                            var targets = searchAnalyzer.Analyze(task.Scan, task.Peaks, peptide_results, glycan_results);
+                            targets = searchAnalyzer.Filter(targets, glycanBuilder.GlycanMaps(),
+                                task.PrecursorMZ, task.Charge);
+                            tempResults.AddRange(targets);
                         }
                     }
                 }
+                
 
                 var decoy_results = decoyPrecursorMatcher.Match(task.PrecursorMZ, task.Charge);
                 if (decoy_results.Count > 0)
@@ -232,8 +241,10 @@ namespace GlycoSeqApp
                         var glycan_results = glycanSearcher.Search(task.Peaks, task.Charge, decoy_results);
                         if (glycan_results.Count > 0)
                         {
-                            tempDecoyResults.AddRange(
-                                searchAnalyzer.Analyze(task.Scan, task.Peaks, peptide_results, glycan_results));
+                            var decoys = searchAnalyzer.Analyze(task.Scan, task.Peaks, peptide_results, glycan_results);
+                            decoys = searchAnalyzer.Filter(decoys, glycanBuilder.GlycanMaps(),
+                                task.PrecursorMZ, task.Charge);
+                            tempDecoyResults.AddRange(decoys);
                         }
                     }
                 }

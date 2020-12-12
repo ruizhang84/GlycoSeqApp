@@ -59,6 +59,8 @@
     <Compile Include="model\glycan\BaseNGlycan.cs" />
     <Compile Include="model\glycan\IGlycan.cs" />
     <Compile Include="model\glycan\NGlycanComplex.cs" />
+    <Compile Include="model\glycan\NGlycanHybrid.cs" />
+    <Compile Include="model\glycan\NHighMannose.cs" />
     <Compile Include="model\protein\BaseProtein.cs" />
     <Compile Include="model\protein\IProtein.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

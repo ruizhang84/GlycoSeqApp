@@ -1,4 +1,5 @@
 ﻿using GlycoSeqClassLibrary.engine.search;
+using GlycoSeqClassLibrary.model.glycan;
 using SpectrumData;
 using System;
 using System.Collections.Generic;
@@ -73,6 +74,30 @@ namespace GlycoSeqClassLibrary.engine.analysis
                             results.Add(r);
                         }
                     }
+                }
+            }
+            return results;
+        }
+
+        public List<SearchResult> Filter(List<SearchResult> searched, Dictionary<string, IGlycan> glycan_map,
+            double precursorMZ, int precursorCharge)
+        {
+            double diff = int.MaxValue;
+            List<SearchResult> results = new List<SearchResult>();
+            double precursorMass = util.mass.Spectrum.To.Compute(precursorMZ, precursorCharge);
+            foreach(var r in searched)
+            {
+                double mass = util.mass.Peptide.To.Compute(r.Sequence())
+                    + util.mass.Glycan.To.Compute(glycan_map[r.Glycan()]);
+                if (Math.Abs(mass - precursorMass) < diff)
+                {
+                    diff = Math.Abs(mass - precursorMass);
+                    results.Clear();
+                    results.Add(r);
+                }
+                else if (Math.Abs(mass - precursorMass) == diff)
+                {
+                    results.Add(r);
                 }
             }
             return results;

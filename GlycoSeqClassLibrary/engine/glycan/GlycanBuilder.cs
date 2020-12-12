@@ -14,17 +14,26 @@ namespace GlycoSeqClassLibrary.engine.glycan
         protected int fuc_;
         protected int neuAc_;
         protected int neuGc_;
+        public bool ComplexInclude { get; set; }
+        public bool HybridInclude { get; set; }
+        public bool HighMannoseInclude { get; set; }
+
         protected Dictionary<double, List<string>> glycans_; // glycan mass, glycan id
         protected Dictionary<string, IGlycan> glycans_map_; // glycan id -> glycan
         protected List<Monosaccharide> candidates_;
 
-        public GlycanBuilder(int hexNAc=12, int hex=12, int fuc=5, int neuAc=4, int neuGc=0)
+        public GlycanBuilder(int hexNAc=12, int hex=12, int fuc=5, int neuAc=4, int neuGc=0,
+            bool complex=true, bool hybrid=false, bool highMannose=false)
         {
             hexNAc_ = hexNAc;
             hex_ = hex;
             fuc_ = fuc;
             neuAc_ = neuAc;
             neuGc_ = neuGc;
+            ComplexInclude = complex;
+            HybridInclude = hybrid;
+            HighMannoseInclude = highMannose;
+
             glycans_ = new Dictionary<double, List<string>>();
             glycans_map_ = new Dictionary<string, IGlycan>();
             candidates_ = new List<Monosaccharide>()
@@ -61,14 +70,33 @@ namespace GlycoSeqClassLibrary.engine.glycan
 
         public void Build()
         {
-            NGlycanComplex root = new NGlycanComplex();
-
-            string root_id = root.ID();
-            glycans_map_[root_id] = root;
-
             Queue<IGlycan> queue = new Queue<IGlycan>();
-            queue.Enqueue(glycans_map_[root_id]);
+            string root_id = "";
 
+            if (ComplexInclude)
+            {
+                NGlycanComplex root = new NGlycanComplex();
+                root_id = root.ID();
+                glycans_map_[root_id] = root;
+                queue.Enqueue(glycans_map_[root_id]);
+            }
+
+            if (HybridInclude)
+            {
+                NGlycanHybrid root2 = new NGlycanHybrid();
+                root_id = root2.ID();
+                glycans_map_[root_id] = root2;
+                queue.Enqueue(glycans_map_[root_id]);
+            }
+
+            if (HighMannoseInclude)
+            {
+                NHighMannose root3 = new NHighMannose();
+                root_id = root3.ID();
+                glycans_map_[root_id] = root3;
+                queue.Enqueue(glycans_map_[root_id]);
+            }
+           
             while (queue.Count > 0)
             {
                 IGlycan node = queue.Peek();

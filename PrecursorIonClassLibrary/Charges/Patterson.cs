@@ -7,8 +7,11 @@ using System.Text;
 namespace PrecursorIonClassLibrary.Charges
 {
     // patterson routine
-    public class Patterson
+    public class Patterson : ICharger
     {
+        private readonly int maxCharge = 10;
+        private readonly double precise = 0.005;
+
         private double GetIntensity(double target, double[] mz, double[] f)
         {
             if (target < mz[0] || target > mz[mz.Length -1])
@@ -56,8 +59,7 @@ namespace PrecursorIonClassLibrary.Charges
         }
 
 
-        public int Charge(List<IPeak> peaks, 
-            double lower, double upper, int maxCharge=10, double precise = 0.005)
+        public int Charge(List<IPeak> peaks, double lower, double upper)
         {
             // default to charge 2
             int charge = 2;

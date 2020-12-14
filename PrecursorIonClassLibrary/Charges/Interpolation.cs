@@ -132,9 +132,6 @@ namespace PrecursorIonClassLibrary.Charges
                 y.Add(a + b * (v - X[index]) + c * Math.Pow(v - X[index], 2) + d * Math.Pow(v - X[index], 3));
 
             }
-
-
-
             return y;
         }
 

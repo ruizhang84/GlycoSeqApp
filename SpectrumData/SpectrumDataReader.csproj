@@ -65,9 +65,11 @@
     <Compile Include="ISpectrum.cs" />
     <Compile Include="ISpectrumReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reader\MGFSpectrumReader.cs" />
     <Compile Include="Reader\ThermoRawSpectrumReader.cs" />
     <Compile Include="Spectrum\GeneralPeak.cs" />
     <Compile Include="Spectrum\GeneralSpectrum.cs" />
+    <Compile Include="Spectrum\MS2Spectrum.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

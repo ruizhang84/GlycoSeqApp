@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ThermoRawReader\SpectrumDataReader.csproj" />
+    <ProjectReference Include="..\SpectrumData\SpectrumDataReader.csproj" />
   </ItemGroup>
 
 </Project>

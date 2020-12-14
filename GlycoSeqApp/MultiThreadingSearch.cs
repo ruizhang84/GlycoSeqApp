@@ -10,10 +10,13 @@ using PrecursorIonClassLibrary.Brain;
 using PrecursorIonClassLibrary.Charges;
 using PrecursorIonClassLibrary.Process;
 using PrecursorIonClassLibrary.Process.PeakPicking.Neighbor;
+using PrecursorIonClassLibrary.Process.Refinement;
 using SpectrumData;
 using SpectrumData.Reader;
+using SpectrumData.Spectrum;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,7 +52,7 @@ namespace GlycoSeqApp
         List<SearchResult> decoys = new List<SearchResult>();
         private readonly object queueLock = new object();
         private readonly object resultLock = new object();
-        private readonly double searchRange = 2;
+        private readonly double searchRange = 1;
         int taskSize = 0;
         
 
@@ -107,79 +110,96 @@ namespace GlycoSeqApp
 
         void GenerateTasks()
         {
-            ISpectrumReader reader = new ThermoRawSpectrumReader();
-            LocalMaximaPicking picking = new LocalMaximaPicking();
-            IProcess process = new LocalNeighborPicking();
-            reader.Init(msPath);
-            
-            int start = reader.GetFirstScan();
-            int end = reader.GetLastScan();
-
-            Dictionary<int, List<int>> scanGroup = new Dictionary<int, List<int>>();
-            int current = -1;
-            for (int i = start; i < end; i++)
+            if (Path.GetExtension(msPath) == ".mgf")
             {
-                if (reader.GetMSnOrder(i) == 1)
+                MGFSpectrumReader reader = new MGFSpectrumReader();
+                reader.Init(msPath);
+
+                Dictionary<int, MS2Spectrum> spectraData = reader.GetSpectrum();
+                foreach (int scan in spectraData.Keys)
                 {
-                    current = i;
-                    scanGroup[i] = new List<int>();
-                }
-                else if (reader.GetMSnOrder(i)  == 2)
-                {
-                    scanGroup[current].Add(i); 
+                    MS2Spectrum spectrum = spectraData[scan];
+                    SearchTask searchTask = new SearchTask(scan, spectrum.GetPeaks(), 
+                        spectrum.PrecursorMZ(), spectrum.PrecursorCharge());
+                    tasks.Enqueue(searchTask);
+                    readingCounter.Add(spectraData.Count);
                 }
             }
+            else
+            {
+                ISpectrumReader reader = new ThermoRawSpectrumReader();
+                LocalMaximaPicking picking = new LocalMaximaPicking();
+                IProcess process = new WeightedAveraging(new LocalNeighborPicking());
+                reader.Init(msPath);
 
-            Parallel.ForEach(scanGroup,
-                new ParallelOptions { MaxDegreeOfParallelism = SearchingParameters.Access.ThreadNums },
-                (scanPair) =>
+                int start = reader.GetFirstScan();
+                int end = reader.GetLastScan();
+
+                Dictionary<int, List<int>> scanGroup = new Dictionary<int, List<int>>();
+                int current = -1;
+                for (int i = start; i < end; i++)
                 {
-                    if (scanPair.Value.Count > 0)
+                    if (reader.GetMSnOrder(i) == 1)
                     {
-                        ISpectrum ms1 = reader.GetSpectrum(scanPair.Key);
-                        List<IPeak> majorPeaks = picking.Process(ms1.GetPeaks());
-                        foreach (int i in scanPair.Value)
-                        {
-                            double mz = reader.GetPrecursorMass(i, reader.GetMSnOrder(i));
-                            int numPeaks = ms1.GetPeaks()
-                                .Where(p => p.GetMZ() > mz - searchRange && p.GetMZ() < mz + searchRange)
-                                .Count();
-                            if (numPeaks == 0)
-                                continue;
+                        current = i;
+                        scanGroup[i] = new List<int>();
+                    }
+                    else if (reader.GetMSnOrder(i) == 2)
+                    {
+                        scanGroup[current].Add(i);
+                    }
+                }
 
-                            ICharger charger = new Patterson();
-                            int charge = charger.Charge(ms1.GetPeaks(), mz - searchRange, mz + searchRange);
-                            if (charge > 5 && numPeaks > 1)
+                Parallel.ForEach(scanGroup,
+                    new ParallelOptions { MaxDegreeOfParallelism = SearchingParameters.Access.ThreadNums },
+                    (scanPair) =>
+                    {
+                        if (scanPair.Value.Count > 0)
+                        {
+                            ISpectrum ms1 = reader.GetSpectrum(scanPair.Key);
+                            List<IPeak> majorPeaks = picking.Process(ms1.GetPeaks());
+                            foreach (int i in scanPair.Value)
                             {
-                                charger = new Fourier();
-                                charge = charger.Charge(ms1.GetPeaks(), mz - searchRange, mz + searchRange);
-                            }
+                                double mz = reader.GetPrecursorMass(i, reader.GetMSnOrder(i));
+                                int numPeaks = ms1.GetPeaks()
+                                    .Where(p => p.GetMZ() > mz - searchRange && p.GetMZ() < mz + searchRange)
+                                    .Count();
+                                if (numPeaks == 0)
+                                    continue;
+
+                                ICharger charger = new Patterson();
+                                int charge = charger.Charge(ms1.GetPeaks(), mz - searchRange, mz + searchRange);
+                                if (charge > 5 && numPeaks > 1)
+                                {
+                                    charger = new Fourier();
+                                    charge = charger.Charge(ms1.GetPeaks(), mz - searchRange, mz + searchRange);
+                                }
 
                             // find evelope cluster
                             EnvelopeProcess envelope = new EnvelopeProcess();
-                            var cluster = envelope.Cluster(majorPeaks, mz, charge);
-                            if (cluster.Count == 0)
-                                continue;
+                                var cluster = envelope.Cluster(majorPeaks, mz, charge);
+                                if (cluster.Count == 0)
+                                    continue;
 
                             // find monopeak
                             Averagine averagine = new Averagine(AveragineType.GlycoPeptide);
-                            BrainCSharp braincs = new BrainCSharp();
-                            MonoisotopicSearcher searcher = new MonoisotopicSearcher(averagine, braincs);
-                            MonoisotopicScore result = searcher.Search(mz, charge, cluster);
-                            double precursorMZ = result.GetMZ();
+                                BrainCSharp braincs = new BrainCSharp();
+                                MonoisotopicSearcher searcher = new MonoisotopicSearcher(averagine, braincs);
+                                MonoisotopicScore result = searcher.Search(mz, charge, cluster);
+                                double precursorMZ = result.GetMZ();
 
                             // search
                             ISpectrum ms2 = reader.GetSpectrum(i);
-                            ms2 = process.Process(ms2);
+                                ms2 = process.Process(ms2);
 
-                            SearchTask searchTask = new SearchTask(i, ms2.GetPeaks(), precursorMZ, charge);
-                            tasks.Enqueue(searchTask);
+                                SearchTask searchTask = new SearchTask(i, ms2.GetPeaks(), precursorMZ, charge);
+                                tasks.Enqueue(searchTask);
+                            }
                         }
-                    }
-                    readingCounter.Add(scanGroup.Count);
-                });
+                        readingCounter.Add(scanGroup.Count);
+                    });
+            }
 
-           
         }
 
 

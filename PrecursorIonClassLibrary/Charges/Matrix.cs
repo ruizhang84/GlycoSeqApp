@@ -71,6 +71,21 @@ namespace PrecursorIonClassLibrary.Charges
             return z;
         }
 
+        public static double[,] Multiply(double[,] x, double a)
+        {
+            int m = x.GetLength(0);
+            int n = x.GetLength(1);
+            double[,] y = new double[m, n];
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    y[i, j] = x[i, j] * a;
+                }
+            }
+            return y;
+        }
+
         public static double[,] Inverse(double[,] x)
         {
             int m = x.GetLength(0);

@@ -17,7 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GlycoSeqClassLibrary\GlycoSeqClassLibrary.csproj" />
     <ProjectReference Include="..\PrecursorIonClassLibrary\PrecursorIonClassLibrary.csproj" />
-    <ProjectReference Include="..\ThermoRawReader\SpectrumDataReader.csproj" />
+    <ProjectReference Include="..\SpectrumData\SpectrumDataReader.csproj" />
   </ItemGroup>
 
 </Project>

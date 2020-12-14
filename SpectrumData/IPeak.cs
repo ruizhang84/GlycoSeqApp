@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SpectrumData
 {
-    public interface IPeak
+    public interface IPeak : IComparable<IPeak>
     {
         double GetMZ();
-        double setMZ(double mz);
+        void SetMZ(double mz);
         double GetIntensity();
         void SetIntensity(double intensity);
     }

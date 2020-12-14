@@ -177,7 +177,7 @@
       <Project>{371bfab2-d026-4cd7-9122-e1303f057c9b}</Project>
       <Name>PrecursorIonClassLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ThermoRawReader\SpectrumDataReader.csproj">
+    <ProjectReference Include="..\SpectrumData\SpectrumDataReader.csproj">
       <Project>{db0bf4e4-76d6-403c-9d37-bd230961ea43}</Project>
       <Name>SpectrumDataReader</Name>
     </ProjectReference>

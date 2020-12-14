@@ -29,7 +29,7 @@ namespace GlycoSeqApp
         private void MSMSFileNames_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog fileNamesDialog = new OpenFileDialog();
-            fileNamesDialog.Filter = "Raw File|*.raw";
+            fileNamesDialog.Filter = "Raw File|*.raw|MGF File|*.mgf";
             fileNamesDialog.Title = "Open a MS2 File";
             fileNamesDialog.Multiselect = true;
             fileNamesDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);

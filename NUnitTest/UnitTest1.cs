@@ -81,7 +81,7 @@ namespace Tests
             // search
             List<SearchResult> searchResults = new List<SearchResult>();
 
-            ISpectrumReader reader = new ThermoRawSpectrumReader();
+            ThermoRawSpectrumReader reader = new ThermoRawSpectrumReader();
             LocalMaximaPicking picking = new LocalMaximaPicking();
             IProcess process = new LocalNeighborPicking();
             reader.Init(path);

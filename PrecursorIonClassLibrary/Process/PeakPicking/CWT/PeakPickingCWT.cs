@@ -12,12 +12,12 @@ namespace PrecursorIonClassLibrary.Process.PeakPicking.CWT
         private double maxScale;
         private double steps;
         private RidgeLineFinder finder;
-        private double lowerBound = 200;
+        private double lowerBound = 100;
         private double upperBound = 2000;
         private double precison = 1.0;
 
-        public PeakPickingCWT(RidgeLineFinder finder, double maxScale=120, double steps=6, 
-            double lowerBound=200, double upperBound=2000, double precison=0.01)
+        public PeakPickingCWT(RidgeLineFinder finder, double maxScale=100, double steps=5, 
+            double lowerBound=100, double upperBound=2000, double precison=0.01)
         {
             this.finder = finder;
             this.maxScale = maxScale;

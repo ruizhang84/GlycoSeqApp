@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlycoSeqClassLibrary", "Gly
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrecursorIonClassLibrary", "PrecursorIonClassLibrary\PrecursorIonClassLibrary.csproj", "{371BFAB2-D026-4CD7-9122-E1303F057C9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectrumDataReader", "ThermoRawReader\SpectrumDataReader.csproj", "{DB0BF4E4-76D6-403C-9D37-BD230961EA43}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectrumDataReader", "SpectrumData\SpectrumDataReader.csproj", "{DB0BF4E4-76D6-403C-9D37-BD230961EA43}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTest", "NUnitTest\NUnitTest.csproj", "{2A1D10E7-5439-4CE1-9668-9B56CE24BAC3}"
 EndProject

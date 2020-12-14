@@ -4,8 +4,6 @@ using GlycoSeqClassLibrary.engine.protein;
 using GlycoSeqClassLibrary.model.glycan;
 using GlycoSeqClassLibrary.model.protein;
 using GlycoSeqClassLibrary.util.io;
-using SpectrumData;
-using SpectrumData.Reader;
 using System;
 using System.Collections.Generic;
 using System.IO;

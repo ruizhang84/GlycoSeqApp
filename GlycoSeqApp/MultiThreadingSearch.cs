@@ -25,18 +25,18 @@ namespace GlycoSeqApp
 {
     public class SearchTask
     {
-        public SearchTask(int scan, List<IPeak> peaks, double mz, int charge)
+        public SearchTask(ISpectrum spectrum, double mz, int charge)
         {
-            Scan = scan;
-            Peaks = peaks;
+            Spectrum = spectrum;
             PrecursorMZ = mz;
             Charge = charge;
         }
-        public int Scan { get; set; }
-        public List<IPeak> Peaks { get; set; }
+        public ISpectrum Spectrum { get; set; }
         public double PrecursorMZ { get; set; }
         public int Charge { get; set; }
+
     }
+
 
     public class MultiThreadingSearch
     {
@@ -119,7 +119,7 @@ namespace GlycoSeqApp
                 foreach (int scan in spectraData.Keys)
                 {
                     MS2Spectrum spectrum = spectraData[scan];
-                    SearchTask searchTask = new SearchTask(scan, spectrum.GetPeaks(), 
+                    SearchTask searchTask = new SearchTask(spectrum, 
                         spectrum.PrecursorMZ(), spectrum.PrecursorCharge());
                     tasks.Enqueue(searchTask);
                     readingCounter.Add(spectraData.Count);
@@ -175,24 +175,24 @@ namespace GlycoSeqApp
                                     charge = charger.Charge(ms1.GetPeaks(), mz - searchRange, mz + searchRange);
                                 }
 
-                            // find evelope cluster
-                            EnvelopeProcess envelope = new EnvelopeProcess();
+                                // find evelope cluster
+                                EnvelopeProcess envelope = new EnvelopeProcess();
                                 var cluster = envelope.Cluster(majorPeaks, mz, charge);
                                 if (cluster.Count == 0)
                                     continue;
 
-                            // find monopeak
-                            Averagine averagine = new Averagine(AveragineType.GlycoPeptide);
+                                // find monopeak
+                                Averagine averagine = new Averagine(AveragineType.GlycoPeptide);
                                 BrainCSharp braincs = new BrainCSharp();
                                 MonoisotopicSearcher searcher = new MonoisotopicSearcher(averagine, braincs);
                                 MonoisotopicScore result = searcher.Search(mz, charge, cluster);
                                 double precursorMZ = result.GetMZ();
 
-                            // search
-                            ISpectrum ms2 = reader.GetSpectrum(i);
+                                // search
+                                ISpectrum ms2 = reader.GetSpectrum(i);
                                 ms2 = process.Process(ms2);
 
-                                SearchTask searchTask = new SearchTask(i, ms2.GetPeaks(), precursorMZ, charge);
+                                SearchTask searchTask = new SearchTask(ms2, precursorMZ, charge);
                                 tasks.Enqueue(searchTask);
                             }
                         }
@@ -234,18 +234,19 @@ namespace GlycoSeqApp
             SearchTask task;
             while ((task = TryGetTask()) != null)
             {
+                ISpectrum spectrum = task.Spectrum;
                 //precursor match
                 var pre_results = precursorMatcher.Match(task.PrecursorMZ, task.Charge);
                 if (pre_results.Count > 0)
                 {
                     // spectrum search
-                    var peptide_results = sequenceSearcher.Search(task.Peaks, task.Charge, pre_results);
+                    var peptide_results = sequenceSearcher.Search(spectrum.GetPeaks(), task.Charge, pre_results);
                     if (peptide_results.Count > 0)
                     {
-                        var glycan_results = glycanSearcher.Search(task.Peaks, task.Charge, pre_results);
+                        var glycan_results = glycanSearcher.Search(spectrum.GetPeaks(), task.Charge, pre_results);
                         if (glycan_results.Count > 0)
                         {
-                            var targets = searchAnalyzer.Analyze(task.Scan, task.Peaks, peptide_results, glycan_results);
+                            var targets = searchAnalyzer.Analyze(spectrum.GetScanNum(), spectrum.GetPeaks(), peptide_results, glycan_results);
                             targets = searchAnalyzer.Filter(targets, glycanBuilder.GlycanMaps(),
                                 task.PrecursorMZ, task.Charge);
                             tempResults.AddRange(targets);
@@ -258,13 +259,13 @@ namespace GlycoSeqApp
                 if (decoy_results.Count > 0)
                 {
                     // spectrum search
-                    var peptide_results = sequenceSearcher.Search(task.Peaks, task.Charge, decoy_results);
+                    var peptide_results = sequenceSearcher.Search(spectrum.GetPeaks(), task.Charge, decoy_results);
                     if (peptide_results.Count > 0)
                     {
-                        var glycan_results = glycanSearcher.Search(task.Peaks, task.Charge, decoy_results);
+                        var glycan_results = glycanSearcher.Search(spectrum.GetPeaks(), task.Charge, decoy_results);
                         if (glycan_results.Count > 0)
                         {
-                            var decoys = searchAnalyzer.Analyze(task.Scan, task.Peaks, peptide_results, glycan_results);
+                            var decoys = searchAnalyzer.Analyze(spectrum.GetScanNum(), spectrum.GetPeaks(), peptide_results, glycan_results);
                             decoys = searchAnalyzer.Filter(decoys, glycanBuilder.GlycanMaps(),
                                 task.PrecursorMZ, task.Charge);
                             tempDecoyResults.AddRange(decoys);

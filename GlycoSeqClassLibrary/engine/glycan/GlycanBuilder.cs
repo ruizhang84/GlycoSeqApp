@@ -71,32 +71,25 @@ namespace GlycoSeqClassLibrary.engine.glycan
         public void Build()
         {
             Queue<IGlycan> queue = new Queue<IGlycan>();
-            string root_id = "";
-
+            IGlycan root;
             if (ComplexInclude)
             {
-                NGlycanComplex root = new NGlycanComplex();
-                root_id = root.ID();
-                glycans_map_[root_id] = root;
-                queue.Enqueue(glycans_map_[root_id]);
+                root = new NGlycanComplex();
+                queue.Enqueue(root);
             }
 
             if (HybridInclude)
             {
-                NGlycanHybrid root2 = new NGlycanHybrid();
-                root_id = root2.ID();
-                glycans_map_[root_id] = root2;
-                queue.Enqueue(glycans_map_[root_id]);
+                root = new NGlycanHybrid();
+                queue.Enqueue(root);
             }
 
             if (HighMannoseInclude)
             {
-                NHighMannose root3 = new NHighMannose();
-                root_id = root3.ID();
-                glycans_map_[root_id] = root3;
-                queue.Enqueue(glycans_map_[root_id]);
+                root = new NHighMannose();
+                queue.Enqueue(root);
             }
-           
+
             while (queue.Count > 0)
             {
                 IGlycan node = queue.Peek();

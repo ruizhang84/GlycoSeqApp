@@ -29,7 +29,7 @@ namespace GlycoSeqApp
     public partial class SearchWindow : Window
     {
         int ReadingCounter;
-        int progressCounter;
+        int ProgressCounter;
         public SearchWindow()
         {
             InitializeComponent();
@@ -76,10 +76,14 @@ namespace GlycoSeqApp
                 SearchingParameters.Access.MannoseInclude);
             glycanBuilder.Build();
 
-            foreach(string file in SearchingParameters.Access.MSMSFiles)
+            int index = 1;
+            foreach (string file in SearchingParameters.Access.MSMSFiles)
             { 
                 ReadingCounter = 0;
-                UpdateSignal("Searching...");
+                ProgressCounter = 0;
+                UpdateProgress(100);
+                Readingprogress(100);
+                UpdateSignal($"Searching...({index}/{SearchingParameters.Access.MSMSFiles.Count})");
                 MultiThreadingSearch search =
                     new MultiThreadingSearch(file, readerCounter, searchCounter,
                         peptides, decoyPeptides, glycanBuilder);
@@ -117,7 +121,7 @@ namespace GlycoSeqApp
                 DispatcherPriority.Normal,
                 new ThreadStart(() =>
                 {
-                    SearchingStatus.Value = progressCounter * 1.0 / total * 1000.0;
+                    SearchingStatus.Value = ProgressCounter * 1.0 / total * 1000.0;
                 }));
         }
 
@@ -133,7 +137,7 @@ namespace GlycoSeqApp
 
         private void SearchProgressChanged(object sender, ProgressingEventArgs e)
         {
-            Interlocked.Increment(ref progressCounter);
+            Interlocked.Increment(ref ProgressCounter);
             UpdateProgress(e.Total);
         }
 

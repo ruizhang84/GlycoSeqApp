@@ -91,6 +91,29 @@ namespace GlycoSeqClassLibrary.engine.search
             if (candidate_glycan_table[i] < identified_glycan_table[i])
                 return false;
         }
+
+        // check terminal 
+        if (identified_glycan_table.Count() == 24)
+        {
+            for(int i = 0; i < 4; i++)
+            {
+                if ( (identified_glycan_table[12+i] > 0 || identified_glycan_table[16+i] >0
+                        ) && identified_glycan_table[4+i] != candidate_glycan_table[4+i])
+                        return false;
+            }
+            
+        }
+        else if (identified_glycan_table.Count() == 16)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if ((identified_glycan_table[10 + i] > 0 || identified_glycan_table[12 + i] > 0
+                        ) && identified_glycan_table[4 + i] != candidate_glycan_table[4 + i])
+                    return false;
+            }
+
+        }
+
         return true;
     }
 

@@ -104,7 +104,7 @@ namespace SpectrumData.Reader
                             {
                                 GroupCollection groups = match.Groups;
                                 peaks.Add(new GeneralPeak(double.Parse(groups[1].Value), 
-                                    double.Parse(groups[1].Value)));
+                                    double.Parse(groups[2].Value)));
                                 break;
                             }
                         }

@@ -105,7 +105,7 @@ namespace GlycoSeqClassLibrary.engine.search
         }
         else if (identified_glycan_table.Count() == 16)
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 2; i++)
             {
                 if ((identified_glycan_table[10 + i] > 0 || identified_glycan_table[12 + i] > 0
                         ) && identified_glycan_table[4 + i] != candidate_glycan_table[4 + i])

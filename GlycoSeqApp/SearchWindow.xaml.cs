@@ -83,7 +83,7 @@ namespace GlycoSeqApp
                 ProgressCounter = 0;
                 UpdateProgress(100);
                 Readingprogress(100);
-                UpdateSignal($"Searching...({index}/{SearchingParameters.Access.MSMSFiles.Count})");
+                UpdateSignal($"Searching...({index++}/{SearchingParameters.Access.MSMSFiles.Count})");
                 MultiThreadingSearch search =
                     new MultiThreadingSearch(file, readerCounter, searchCounter,
                         peptides, decoyPeptides, glycanBuilder);

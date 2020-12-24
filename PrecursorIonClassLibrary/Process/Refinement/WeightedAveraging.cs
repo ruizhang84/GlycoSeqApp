@@ -12,8 +12,10 @@ namespace PrecursorIonClassLibrary.Process.Refinement
         public IProcess peakPicking;
         protected double percent = 0.3;
         readonly double precision = 0.1;
+        readonly int mzRound = 5;
+        readonly int peakRound = 3;
 
-        public WeightedAveraging(IProcess peakPicking, double percent=0.3)
+        public WeightedAveraging(IProcess peakPicking, double percent = 0.3)
         {
             this.peakPicking = peakPicking;
             this.percent = percent;
@@ -32,14 +34,14 @@ namespace PrecursorIonClassLibrary.Process.Refinement
                     break;
                 neighbors.Add(peaks[curr]);
 
-                if (curr > 0 && peaks[curr-1].GetIntensity() > peaks[curr].GetIntensity())
+                if (curr > 0 && peaks[curr - 1].GetIntensity() > peaks[curr].GetIntensity())
                     break;
                 curr--;
             }
             curr = index + 1;
             while (curr < peaks.Count)
             {
-                if (peaks[curr].GetIntensity() > peaks[curr-1].GetIntensity())
+                if (peaks[curr].GetIntensity() > peaks[curr - 1].GetIntensity())
                     break;
                 else if (peaks[curr].GetIntensity() < target.GetIntensity() * percent)
                     break;
@@ -55,7 +57,9 @@ namespace PrecursorIonClassLibrary.Process.Refinement
         {
             double weighted = peaks.Select(p => p.GetMZ() * p.GetIntensity()).Sum();
             double intensity_sums = peaks.Select(p => p.GetIntensity()).Sum();
-            return new GeneralPeak(weighted / intensity_sums, target.GetIntensity());
+            return new GeneralPeak(
+                Math.Round(weighted / intensity_sums, mzRound),
+                Math.Round(target.GetIntensity(), peakRound));
         }
 
 
@@ -63,7 +67,7 @@ namespace PrecursorIonClassLibrary.Process.Refinement
         {
             ISpectrum centroid = peakPicking.Process(spectrum);
             List<IPeak> peaks = new List<IPeak>();
-            foreach(IPeak cPeak in centroid.GetPeaks())
+            foreach (IPeak cPeak in centroid.GetPeaks())
             {
                 List<IPeak> neighbors = NeighborPeaks(cPeak, spectrum.GetPeaks());
                 peaks.Add(Average(cPeak, neighbors));

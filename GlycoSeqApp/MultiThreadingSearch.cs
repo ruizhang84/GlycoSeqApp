@@ -108,6 +108,51 @@ namespace GlycoSeqApp
             Task.WaitAll(searches.ToArray());
         }
 
+        List<IPeak> FilterPeaks(List<IPeak> peaks, double target, double range)
+        {
+            if (peaks.Count == 0)
+            {
+                return peaks;
+            }
+
+            int start = 0;
+            int end = peaks.Count - 1;
+            int middle = 0;
+            if (peaks[start].GetMZ() > target - range)
+            {
+                middle = start;
+            }
+            else
+            {
+                while (start + 1 < end)
+                {
+                    middle = (end - start) / 2 + start;
+                    double mz = peaks[middle].GetMZ() + range;
+                    if (mz == target)
+                    {
+                        break;
+                    }
+                    else if (mz < target)
+                    {
+                        start = middle;
+                    }
+                    else
+                    {
+                        end = middle - 1;
+                    }
+                }
+            }
+
+            List<IPeak> res = new List<IPeak>();
+            while (middle < peaks.Count)
+            {
+                if (peaks[middle].GetMZ() > target + range)
+                    break;
+                res.Add(peaks[middle++]);
+            }
+            return res;
+        }
+
         void GenerateTasks()
         {
             if (Path.GetExtension(msPath) == ".mgf")
@@ -157,23 +202,32 @@ namespace GlycoSeqApp
                         if (scanPair.Value.Count > 0)
                         {
                             ISpectrum ms1 = reader.GetSpectrum(scanPair.Key);
-                            List<IPeak> majorPeaks = picking.Process(ms1.GetPeaks());
                             foreach (int i in scanPair.Value)
                             {
                                 double mz = reader.GetPrecursorMass(i, reader.GetMSnOrder(i));
-                                int numPeaks = ms1.GetPeaks()
-                                    .Where(p => p.GetMZ() > mz - searchRange && p.GetMZ() < mz + searchRange)
-                                    .Count();
-                                if (numPeaks == 0)
+                                List<IPeak> ms1Peaks = FilterPeaks(ms1.GetPeaks(), mz, searchRange);
+
+                                if (ms1Peaks.Count() == 0)
                                     continue;
 
-                                ICharger charger = new Patterson();
-                                int charge = charger.Charge(ms1.GetPeaks(), mz - searchRange, mz + searchRange);
-                                if (charge > 5 && numPeaks > 1)
+                                // insert pseudo peaks for large gap
+                                List<IPeak> peaks = new List<IPeak>();
+                                double precision = 0.02;
+                                double last = ms1Peaks.First().GetMZ();
+                                foreach (IPeak peak in ms1Peaks)
                                 {
-                                    charger = new Fourier();
-                                    charge = charger.Charge(ms1.GetPeaks(), mz - searchRange, mz + searchRange);
+                                    if (peak.GetMZ() - last > precision)
+                                    {
+                                        peaks.Add(new GeneralPeak(last + precision / 2, 0));
+                                        peaks.Add(new GeneralPeak(peak.GetMZ() - precision / 2, 0));
+                                    }
+                                    peaks.Add(peak);
+                                    last = peak.GetMZ();
                                 }
+                                List<IPeak> majorPeaks = picking.Process(peaks);
+
+                                ICharger charger = new PattersonFourierCombine();
+                                int charge = charger.Charge(peaks, mz - searchRange, mz + searchRange);
 
                                 // find evelope cluster
                                 EnvelopeProcess envelope = new EnvelopeProcess();

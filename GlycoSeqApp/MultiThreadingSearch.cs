@@ -226,7 +226,7 @@ namespace GlycoSeqApp
                                 }
                                 List<IPeak> majorPeaks = picking.Process(peaks);
 
-                                ICharger charger = new PattersonFourierCombine();
+                                ICharger charger = new Patterson();
                                 int charge = charger.Charge(peaks, mz - searchRange, mz + searchRange);
 
                                 // find evelope cluster

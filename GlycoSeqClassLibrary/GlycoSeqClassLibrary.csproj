@@ -70,6 +70,7 @@
     <Compile Include="engine\analysis\SearchResult.cs" />
     <Compile Include="engine\glycan\GlycanBuilder.cs" />
     <Compile Include="engine\protein\ProteinDigest.cs" />
+    <Compile Include="engine\protein\ProteinModification.cs" />
     <Compile Include="engine\protein\ProteinPTM.cs" />
     <Compile Include="engine\search\GlycanSearch.cs" />
     <Compile Include="engine\search\PrecursorMatch.cs" />

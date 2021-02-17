@@ -43,11 +43,11 @@ namespace GlycoSeqClassLibrary.engine.analysis
             double best_score = 0;
             foreach(string peptide in peptides_map.Keys)
             {
-                foreach(string p in peptides_map[peptide])
-                {
-                    if (!glycans_map.ContainsKey(peptide))
-                        continue;
+                if (!glycans_map.ContainsKey(peptide))
+                    continue;
 
+                foreach (string p in peptides_map[peptide])
+                { 
                     foreach(string g in glycans_map[peptide])
                     {
                         // get index

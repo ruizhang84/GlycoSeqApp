@@ -19,6 +19,8 @@ namespace GlycoSeqApp
         public List<string> DigestionEnzyme { get; set; } = new List<string> { "Trypsin", "GluC" };
         public int MissCleavage { get; set; } = 2;
         public int MiniPeptideLength { get; set; } = 5;
+        public bool Oxidiatoin { get; set; } = true;
+        public bool Deamidation { get; set; } = true;
 
         //glycan
         public bool ComplexInclude { get; set; } = true;
@@ -53,6 +55,8 @@ namespace GlycoSeqApp
             DigestionEnzyme = ConfigureParameters.Access.DigestionEnzyme.ToList();
             MissCleavage = ConfigureParameters.Access.MissCleavage;
             MiniPeptideLength = ConfigureParameters.Access.MiniPeptideLength;
+            Oxidiatoin = ConfigureParameters.Access.Oxidiatoin;
+            Deamidation = ConfigureParameters.Access.Deamidation;
             ComplexInclude = ConfigureParameters.Access.ComplexInclude;
             HybridInclude = ConfigureParameters.Access.HybridInclude;
             MannoseInclude = ConfigureParameters.Access.MannoseInclude;
@@ -83,6 +87,8 @@ namespace GlycoSeqApp
         public List<string> DigestionEnzyme { get; set; } = new List<string> { "Trypsin", "GluC" };
         public int MissCleavage { get; set; } = 2;
         public int MiniPeptideLength { get; set; } = 5;
+        public bool Oxidiatoin { get; set; } = true;
+        public bool Deamidation { get; set; } = true;
 
         //glycan
         public bool ComplexInclude { get; set; } = true;

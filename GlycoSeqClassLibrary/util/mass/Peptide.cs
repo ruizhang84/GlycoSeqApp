@@ -75,6 +75,11 @@ namespace GlycoSeqClassLibrary.util.mass
                     return 186.07931; //186.07932
                 case 'Y':
                     return 163.06333;
+                case '$':
+                    return 131.04049 + 15.994915; // oxidation of M
+                case '@':
+                case '#':
+                    return 114.04293 + 0.984016; // Deamidated N
                 default:
                     return 118.9;   //Average molecular weight of an amino acid
             }

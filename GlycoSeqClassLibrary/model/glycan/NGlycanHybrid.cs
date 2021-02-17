@@ -83,7 +83,7 @@ namespace GlycoSeqClassLibrary.model.glycan
                         NGlycanHybrid ptr = CreateByAddFucCore();
                         glycans.Add(ptr);
                     }
-                    else if (ValidAddFucTerminal())
+                    if (ValidAddFucTerminal())
                     {
                         List<NGlycanHybrid> gs = CreateByAddFucTerminal();
                         glycans.AddRange(gs);
@@ -271,7 +271,8 @@ namespace GlycoSeqClassLibrary.model.glycan
 
         bool ValidAddFucCore()
         {
-            return (table_[0] == 1 && table_[1] == 0 && table_[2] == 0);  //core
+            return (table_[2] == 0);  //core
+            //return (table_[0] == 1 && table_[1] == 0 && table_[2] == 0);  //core
         }
 
         NGlycanHybrid CreateByAddFucCore()

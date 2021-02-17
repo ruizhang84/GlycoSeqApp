@@ -67,7 +67,8 @@ namespace GlycoSeqApp
                     writer.WriteLine("scan,peptide,glycan,site,score");
                     foreach (SearchResult r in res)
                     {
-                        writer.WriteLine(r.Scan().ToString() + ", " + r.Sequence() + ","
+                        writer.WriteLine(r.Scan().ToString() + ", " + 
+                            ProteinModification.Interpret(r.Sequence()) + ","
                             + r.Glycan() + "," + r.ModifySite().ToString() + "," + r.Score().ToString());
                         writer.Flush();
                     }
@@ -131,7 +132,11 @@ namespace GlycoSeqApp
                         ProteinPTM.ContainsNGlycanSite));
                 }
             }
-            return peptides.ToList();
+
+            return ProteinModification.DynamicModification(
+                peptides, ProteinPTM.ContainsNGlycanSite, 
+                SearchingParameters.Access.Oxidiatoin,
+                SearchingParameters.Access.Deamidation).ToList();
         }
     }
 }

@@ -59,6 +59,10 @@ namespace GlycoSeqApp
                 }
             }
 
+            if (SearchingParameters.Access.Oxidiatoin)
+                Oxidation.IsChecked = true;
+            if (SearchingParameters.Access.Deamidation)
+                Deamidation.IsChecked = true;
 
             ThreadNums.Text = SearchingParameters.Access.ThreadNums.ToString();
 
@@ -305,6 +309,25 @@ namespace GlycoSeqApp
             if (!ConfigureParameters.Access.DigestionEnzyme.Contains("Pepsin"))
                 ConfigureParameters.Access.DigestionEnzyme.Add("Pepsin");
             DigestionEnzymes.Text = string.Join("+", ConfigureParameters.Access.DigestionEnzyme);
+        }
+
+        private void Oxidation_UnChecked(object sender, RoutedEventArgs e)
+        {
+            ConfigureParameters.Access.Oxidiatoin = false;
+        }
+
+        private void Oxidation_Checked(object sender, RoutedEventArgs e)
+        {
+            ConfigureParameters.Access.Oxidiatoin = true;
+        }
+        private void Deamidation_UnChecked(object sender, RoutedEventArgs e)
+        {
+            ConfigureParameters.Access.Deamidation = false;
+        }
+
+        private void Deamidation_Checked(object sender, RoutedEventArgs e)
+        {
+            ConfigureParameters.Access.Deamidation = true;
         }
 
     }

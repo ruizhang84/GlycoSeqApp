@@ -43,6 +43,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition />
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Row="0">
@@ -52,13 +53,13 @@
             <StackPanel Orientation="Horizontal" Grid.Row="1">
                 <StackPanel.Resources>
                     <Style TargetType="{x:Type CheckBox}">
-                        <Setter Property="Margin" Value="0,0,20,0"/>
+                        <Setter Property="Margin" Value="5,0,20,0"/>
                     </Style>
                 </StackPanel.Resources>
-                <CheckBox Name="Trypsin" Content="Trypsin" Checked="Trypsin_Checked" Unchecked="Trypsin_Unchecked" />
-                <CheckBox Name="GluC" Content="GluC" Checked="GluC_Checked" Unchecked="GluC_UnChecked"/>
-                <CheckBox Name="Chymotrypsin" Content="Chymotrypsin"  Checked="Chymotrypsin_Checked" Unchecked="Chymotrypsin_UnChecked"/>
-                <CheckBox Name="Pepsin" Content="Pepsin" Checked="Pepsin_Checked" Unchecked="Pepsin_UnChecked"/>
+                <CheckBox Name="Trypsin" VerticalAlignment="Center" Content="Trypsin" Checked="Trypsin_Checked" Unchecked="Trypsin_Unchecked" />
+                <CheckBox Name="GluC" VerticalAlignment="Center" Content="GluC" Checked="GluC_Checked" Unchecked="GluC_UnChecked"/>
+                <CheckBox Name="Chymotrypsin" VerticalAlignment="Center" Content="Chymotrypsin"  Checked="Chymotrypsin_Checked" Unchecked="Chymotrypsin_UnChecked"/>
+                <CheckBox Name="Pepsin" VerticalAlignment="Center" Content="Pepsin" Checked="Pepsin_Checked" Unchecked="Pepsin_UnChecked"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="2">
                 <Label Content="Miss Cleavage"/>
@@ -66,7 +67,12 @@
                 <Label Content="Minimal Peptide Length"/>
                 <TextBox Name="MiniPeptideLength" Text="5" VerticalAlignment="Center" FontSize="12" Width="40"/>
             </StackPanel>
-            <Separator VerticalAlignment="Bottom" Grid.Row="3"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="3">
+                <Label Content="Dynamic Modification: "/>
+                <CheckBox Name="Oxidation" Content="Oxidation" Checked="Oxidation_Checked" Unchecked="Oxidation_UnChecked" VerticalAlignment="Center" Margin="4"/>
+                <CheckBox Name="Deamidation" Content="Deamidation" Checked="Deamidation_Checked" Unchecked="Deamidation_UnChecked" VerticalAlignment="Center" Margin="4"/>
+            </StackPanel>
+            <Separator VerticalAlignment="Bottom" Grid.Row="4"/>
         </Grid>
         <Grid Grid.Row="2" Margin="10, 0, 10, 0">
             <Grid.RowDefinitions>
@@ -105,7 +111,7 @@
                 </StackPanel>
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="4" Margin="10, 0, 10, 0">
+        <Grid Grid.Row="5" Margin="10, 0, 10, 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -126,7 +132,7 @@
             <Separator VerticalAlignment="Bottom" Grid.Row="4"/>
         </Grid>
 
-        <Grid Grid.Row="5" HorizontalAlignment="Right" VerticalAlignment="Center">
+        <Grid Grid.Row="6" HorizontalAlignment="Right" VerticalAlignment="Center">
             <Button x:Name="Save"  Content="Save" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Margin="0,0,160,0" Click="Save_Click" />
             <Button x:Name="Cancel"  Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Margin="0,0,70,0" Click="Cancel_Click" />
         </Grid>

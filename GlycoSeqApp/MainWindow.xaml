@@ -18,7 +18,7 @@
         <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="Black" Grid.Row="0">
             <StackPanel Orientation="Horizontal">
                 <Label Content="MS/MS Files" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <Button x:Name="MSMSFileNames" Content="Open Raw Files" Click="MSMSFileNames_Click" VerticalAlignment="Center" Padding="5, 1, 5, 1"/>
+                <Button x:Name="MSMSFileNames" Content="Open Files (Raw/MGF)" Click="MSMSFileNames_Click" VerticalAlignment="Center" Padding="5, 1, 5, 1"/>
             </StackPanel>
         </Border>
         <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="Black" Grid.Row="1">

@@ -330,5 +330,14 @@ namespace GlycoSeqApp
             ConfigureParameters.Access.Deamidation = true;
         }
 
+        private void Carbamidomethylation_Checked(object sender, RoutedEventArgs e)
+        {
+            ConfigureParameters.Access.Cysteine = 57.02146;
+        }
+
+        private void Carboxymethylation_Checked(object sender, RoutedEventArgs e)
+        {
+            ConfigureParameters.Access.Cysteine = 58.00548;
+        }
     }
 }

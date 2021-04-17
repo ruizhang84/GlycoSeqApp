@@ -21,6 +21,7 @@ namespace GlycoSeqApp
         public int MiniPeptideLength { get; set; } = 5;
         public bool Oxidiatoin { get; set; } = true;
         public bool Deamidation { get; set; } = true;
+        public double Cysteine { get; set;  } = 57.02146; // Carboxyamidomethylcysteine
 
         //glycan
         public bool ComplexInclude { get; set; } = true;
@@ -57,6 +58,7 @@ namespace GlycoSeqApp
             MiniPeptideLength = ConfigureParameters.Access.MiniPeptideLength;
             Oxidiatoin = ConfigureParameters.Access.Oxidiatoin;
             Deamidation = ConfigureParameters.Access.Deamidation;
+            Cysteine = ConfigureParameters.Access.Cysteine;
             ComplexInclude = ConfigureParameters.Access.ComplexInclude;
             HybridInclude = ConfigureParameters.Access.HybridInclude;
             MannoseInclude = ConfigureParameters.Access.MannoseInclude;
@@ -89,6 +91,7 @@ namespace GlycoSeqApp
         public int MiniPeptideLength { get; set; } = 5;
         public bool Oxidiatoin { get; set; } = true;
         public bool Deamidation { get; set; } = true;
+        public double Cysteine { get; set; } = 57.02146;
 
         //glycan
         public bool ComplexInclude { get; set; } = true;

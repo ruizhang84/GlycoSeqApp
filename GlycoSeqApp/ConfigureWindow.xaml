@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GlycoSeqApp"
         mc:Ignorable="d"
-        Title="ConfigureWindow" Height="340" Width="700">
+        Title="ConfigureWindow" Height="360" Width="700">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -67,7 +67,12 @@
                 <Label Content="Minimal Peptide Length"/>
                 <TextBox Name="MiniPeptideLength" Text="5" VerticalAlignment="Center" FontSize="12" Width="40"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="3">
+			<StackPanel Orientation="Horizontal" Grid.Row="3">
+                <Label Content="Static Modification: "/>
+                <RadioButton Name="Carbamidomethylation" Content="Carbamidomethylation" IsChecked="True" VerticalAlignment="Center" Margin="4" Checked="Carbamidomethylation_Checked"/>
+                <RadioButton Name="Carboxymethylation" Content="Carboxymethylation of C" VerticalAlignment="Center" Margin="4" Checked="Carboxymethylation_Checked"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Row="4">
                 <Label Content="Dynamic Modification: "/>
                 <CheckBox Name="Oxidation" Content="Oxidation" Checked="Oxidation_Checked" Unchecked="Oxidation_UnChecked" VerticalAlignment="Center" Margin="4"/>
                 <CheckBox Name="Deamidation" Content="Deamidation" Checked="Deamidation_Checked" Unchecked="Deamidation_UnChecked" VerticalAlignment="Center" Margin="4"/>
@@ -98,7 +103,7 @@
         </Grid>
         <Grid Grid.Row="3" Margin="10, 0, 10, 0">
             <StackPanel>
-                <Label Content="Complex Types:" />
+                <Label Content="Glycan Types:" />
                 <StackPanel Margin="4" Orientation="Horizontal">
                     <StackPanel.Resources>
                         <Style TargetType="{x:Type CheckBox}">

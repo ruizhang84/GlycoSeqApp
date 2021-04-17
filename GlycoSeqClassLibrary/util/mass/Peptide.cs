@@ -17,6 +17,13 @@ namespace GlycoSeqClassLibrary.util.mass
         {
         }
 
+        private double cysteine = 57.02146; // Carboxyamidomethylcysteine
+
+        public void SetCysteine(double cysteine)
+        {
+            this.cysteine = cysteine;
+        }
+
         public double Compute(string sequence)
         {
             double mass = 18.0105;  //water
@@ -24,7 +31,7 @@ namespace GlycoSeqClassLibrary.util.mass
             {
                 if (s == 'C')
                 {
-                    mass += 57.02146;
+                    mass += cysteine;
                 }
                 mass += GetAminoAcidMW(s);
             }

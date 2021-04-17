@@ -4,6 +4,7 @@ using GlycoSeqClassLibrary.engine.protein;
 using GlycoSeqClassLibrary.model.glycan;
 using GlycoSeqClassLibrary.model.protein;
 using GlycoSeqClassLibrary.util.io;
+using GlycoSeqClassLibrary.util.mass;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -47,9 +48,10 @@ namespace GlycoSeqApp
             Counter readerCounter = new Counter();
             Counter searchCounter = new Counter();
             readerCounter.progressChange += ReadProgressChanged;
-            searchCounter.progressChange += SearchProgressChanged;           
+            searchCounter.progressChange += SearchProgressChanged;
 
             // build pepeptides
+            Peptide.To.SetCysteine(ConfigureParameters.Access.Cysteine);
             IProteinReader proteinReader = new FastaReader();
             List<IProtein> proteins = proteinReader.Read(SearchingParameters.Access.FastaFile);
             List<IProtein> decoyProteins = new List<IProtein>();
@@ -63,6 +65,7 @@ namespace GlycoSeqApp
                 MultiThreadingSearchHelper.GeneratePeptides(proteins);
             List<string> decoyPeptides = 
                 MultiThreadingSearchHelper.GeneratePeptides(decoyProteins);
+            
 
             // build glycans
             GlycanBuilder glycanBuilder = new GlycanBuilder(

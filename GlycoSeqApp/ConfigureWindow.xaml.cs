@@ -84,6 +84,21 @@ namespace GlycoSeqApp
             NeuGc.Text = SearchingParameters.Access.NeuGc.ToString();
 
             FDRs.Text = (SearchingParameters.Access.FDRValue * 100.0).ToString();
+
+            if (SearchingParameters.Access.Cysteine == 57.02146)
+            {
+                Carbamidomethylation.IsChecked = true;
+
+            }else
+            if (SearchingParameters.Access.Cysteine == 58.00548)
+            {
+                Carboxymethylation.IsChecked = true;
+            }
+            else
+            {
+                NoModification.IsChecked = true;
+            }
+
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
@@ -334,10 +349,16 @@ namespace GlycoSeqApp
         {
             ConfigureParameters.Access.Cysteine = 57.02146;
         }
+        private void NoModification_Checked(object sender, RoutedEventArgs e)
+        {
+            ConfigureParameters.Access.Cysteine = 0;
+        }
 
         private void Carboxymethylation_Checked(object sender, RoutedEventArgs e)
         {
             ConfigureParameters.Access.Cysteine = 58.00548;
         }
+
+
     }
 }

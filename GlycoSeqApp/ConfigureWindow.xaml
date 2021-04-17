@@ -69,6 +69,7 @@
             </StackPanel>
 			<StackPanel Orientation="Horizontal" Grid.Row="3">
                 <Label Content="Static Modification: "/>
+                <RadioButton Name="NoModification" Content="None" VerticalAlignment="Center" Margin="4" Checked="NoModification_Checked"/>
                 <RadioButton Name="Carbamidomethylation" Content="Carbamidomethylation" IsChecked="True" VerticalAlignment="Center" Margin="4" Checked="Carbamidomethylation_Checked"/>
                 <RadioButton Name="Carboxymethylation" Content="Carboxymethylation of C" VerticalAlignment="Center" Margin="4" Checked="Carboxymethylation_Checked"/>
             </StackPanel>

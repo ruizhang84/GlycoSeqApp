@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlycoSeqClassLibrary.algorithm;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -163,6 +164,22 @@ namespace GlycoSeqApp
             {
                 MessageBox.Show("MSMS tolerance value is invalid!");
                 return false;
+            }
+            if (MS1TolByPPM.IsChecked == true)
+            {
+                ConfigureParameters.Access.MS1ToleranceBy = ToleranceBy.PPM;
+            }
+            else
+            {
+                ConfigureParameters.Access.MS1ToleranceBy = ToleranceBy.Dalton;
+            }
+            if (MS2TolByPPM.IsChecked == true)
+            {
+                ConfigureParameters.Access.MS2ToleranceBy = ToleranceBy.PPM;
+            }
+            else
+            {
+                ConfigureParameters.Access.MS2ToleranceBy = ToleranceBy.Dalton;
             }
             return true;
         }

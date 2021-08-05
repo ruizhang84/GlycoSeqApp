@@ -210,6 +210,9 @@ namespace GlycoSeqApp
                                 if (ms1Peaks.Count() == 0)
                                     continue;
 
+                                ICharger charger = new Patterson();
+                                int charge = charger.Charge(ms1Peaks, mz - searchRange, mz + searchRange);
+
                                 // insert pseudo peaks for large gap
                                 List<IPeak> peaks = new List<IPeak>();
                                 double precision = 0.02;
@@ -225,9 +228,6 @@ namespace GlycoSeqApp
                                     last = peak.GetMZ();
                                 }
                                 List<IPeak> majorPeaks = picking.Process(peaks);
-
-                                ICharger charger = new Patterson();
-                                int charge = charger.Charge(peaks, mz - searchRange, mz + searchRange);
 
                                 // find evelope cluster
                                 EnvelopeProcess envelope = new EnvelopeProcess();

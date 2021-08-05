@@ -154,11 +154,11 @@ namespace GlycoSeqClassLibrary.engine.search
             if (node.Missing() > kMissing)
                 continue;
 
-                // extending queue
+            // extending queue
             Dictionary<string, Dictionary<string, HashSet<int>>> peakMatch = node.Matches();
-            foreach (var peptide in peakMatch.Keys)
+            foreach (var peptide in peakMatch.Keys.ToList())
             {
-                foreach (var glycan_id in peakMatch[peptide].Keys)
+                foreach (var glycan_id in peakMatch[peptide].Keys.ToList())
                 {
                     List<int> peak_indexes = peakMatch[peptide][glycan_id].ToList();
 

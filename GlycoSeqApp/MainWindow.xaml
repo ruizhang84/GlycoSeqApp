@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GlycoSeqApp"
         mc:Ignorable="d"
-        Title="GlycoSeq" Height="270" Width="750">
+        Title="GlycoHybridSeq" Height="270" Width="750">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
